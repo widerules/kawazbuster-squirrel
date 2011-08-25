@@ -12,28 +12,28 @@ http://www.kawaz.org/projects/kawaz_buster/
 Have fun!
 
 -----------------------------------------------------------------------
-���킸���񂽂����I
+かわずたんたたき！
 
-�^�b�`�ŗV�ׂ�~�j�Q�[���I
+タッチで遊べるミニゲーム！
 
-�D�y�̃Q�[������҃R�~���j�e�B"Kawaz"�ɂ�萧�삳�ꂽ iPhone �A�v���u���킸���񂽂����I�v�� Squirrel �ɈڐA�������̂ł��B
+札幌のゲーム制作者コミュニティ"Kawaz"により制作された iPhone アプリ「かわずたんたたき！」を Squirrel に移植したものです。
 
-�I���W�i���̂��̂� cocos2d-iPhone �ō���Ă��܂��B
+オリジナルのものは cocos2d-iPhone で作られています。
 http://www.kawaz.org/projects/kawaz_buster/
 https://github.com/giginet/KawazBuster/
 
-���C�Z���X�́A�f�ށA�\�[�X�R�[�h�܂߂�
-�E���p�E�񏤗p��킸���ρA�Ĕz�z�\
-�E����\�L�͕K�{
-�ł��B
+ライセンスは、素材、ソースコード含めて
+・商用・非商用問わず改変、再配布可能
+・著作表記は必須
+です。
 
-�����т���
+あそびかた
 
-�Ƃт����Ă������킸����� �悤����Ȃ� ���� �}�C���h�� ���� �����߂܂��傤
+とびだしてきたかわずたんを ようしゃなく かつ マイルドに つついて いじめましょう
 
-�ł� �΂������ ���������_��! �΂��͂����Ⴄ�̂Œ���
+でも ばくだんは さわっちゃダメ! ばくはつしちゃうので注意
 
-�X�R�A�Ƃ��͂Ȃ�! ���Ƃ��Ă�߂����Ă���΂낤!!
+スコアとかはなぞ! 高とくてんめざしてがんばろう!!
 
 -----------------------------------------------------------------------
 Copyright (c) 2011 Kawaz
