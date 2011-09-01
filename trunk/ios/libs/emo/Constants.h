@@ -28,6 +28,9 @@
 #ifndef EMO_CONSTANT_H
 #define EMO_CONSTANT_H
 
+#define EMO_BUILD_NUMBER 10
+
+#define EMO_WITH_SANDBOX
 #define PNG_NO_PEDANTIC_WARNINGS
 
 #define EMO_LOG_TAG "EmoFramework"
@@ -198,4 +201,7 @@
 #define POINTS_3D_SIZE 3
 #define POINTS_RECTANGLE 4
 #define POINTS_TRIANGLE 3
+
+#define TYPE_ASSET    0
+#define TYPE_DOCUMENT 1
 #endif

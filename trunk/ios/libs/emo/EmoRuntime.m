@@ -137,7 +137,12 @@ void initRuntimeFunctions() {
     registerClassFunc(engine.sqvm, EMO_STOPWATCH_CLASS, "stop",          emoRuntimeStopwatchStop);
     registerClassFunc(engine.sqvm, EMO_STOPWATCH_CLASS, "elapsed",       emoRuntimeStopwatchElapsed);
     registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS,   "setLogLevel",   emoRuntimeSetLogLevel);
-	
+#ifndef EMO_WITH_SANDBOX
+    registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS,   "compilebuffer", emoRuntimeCompileBuffer);
+	registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS,   "compile",       emoRuntimeCompile);
+#endif
+	registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS,   "isSandboxEnabled", emoRuntimeIsSandboxEnabled);
+	registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS,   "getDocumentDir",emoRuntimeGetDocumentDir);
 	registerClassFunc(engine.sqvm, EMO_EVENT_CLASS,   "registerSensors", emoRegisterSensors);
 	registerClassFunc(engine.sqvm, EMO_EVENT_CLASS,   "enableSensor",    emoEnableSensor);
 	registerClassFunc(engine.sqvm, EMO_EVENT_CLASS,   "disableSensor",   emoDisableSensor);
@@ -148,8 +153,17 @@ void initRuntimeFunctions() {
     registerClassFunc(engine.sqvm, EMO_EVENT_CLASS,   "enableOnFpsCallback",  emoEnableOnFpsCallback);
     registerClassFunc(engine.sqvm, EMO_EVENT_CLASS,   "disableOnFpsCallback", emoDisableOnFpsCallback);
 
+    registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS, "buildNumber",   emoRuntimeBuildNumber);	
     registerClassFunc(engine.sqvm, EMO_RUNTIME_CLASS, "nativeEcho",   emoRuntimeEcho);	
     registerClassFunc(engine.sqvm, EMO_NET_CLASS,     "request",      emoAsyncHttpRequest);
+}
+
+/*
+ * returns build number of the library
+ */
+SQInteger emoRuntimeBuildNumber(HSQUIRRELVM v) {
+    sq_pushinteger(v, EMO_BUILD_NUMBER);
+    return 1;
 }
 
 /*
@@ -174,7 +188,7 @@ SQInteger emoRuntimeEcho(HSQUIRRELVM v) {
 }
 
 /*
- * import function called from squirrel script
+ * import script from resource
  */
 SQInteger emoImportScript(HSQUIRRELVM v) {
     SQInteger nargs = sq_gettop(v);
@@ -189,6 +203,85 @@ SQInteger emoImportScript(HSQUIRRELVM v) {
     	}
     }
 	return 0;
+}
+
+#ifndef EMO_WITH_SANDBOX
+/*
+ * compile script from path
+ */
+SQInteger emoRuntimeCompile(HSQUIRRELVM v) {
+    
+    if (sq_gettype(v, 2) == OT_STRING) {
+        const SQChar *fname;
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &fname);
+        sq_poptop(v);
+
+        // check if the file type exists
+        if (sq_gettype(v, 3) == OT_INTEGER) {
+            SQInteger fileType = TYPE_ASSET;
+            sq_getinteger(v, 3, &fileType);
+            
+            if (fileType == TYPE_ASSET) {
+                // load script from resource
+                [engine loadScriptFromResource:(const char*)fname vm:v];
+            } else if (fileType == TYPE_DOCUMENT) {
+                // load script from user document directory
+                NSString* docDir = [NSSearchPathForDirectoriesInDomains(
+                                NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+                [engine loadScript:[NSString stringWithFormat:@"%@/%s", docDir, fname] vm:v];                
+            } else {
+                // load script from path
+                [engine loadScript:[NSString stringWithFormat:@"%s", fname] vm:v];                
+            }
+        } else {
+            // load script from path
+            [engine loadScript:[NSString stringWithFormat:@"%s", fname] vm:v];                
+        }
+        
+    }
+	return 0;
+}
+
+SQInteger emoRuntimeCompileBuffer(HSQUIRRELVM v) {
+    const SQChar* script;
+    SQInteger nargs = sq_gettop(v);
+    if (nargs >= 2 && sq_gettype(v, 2) == OT_STRING) {
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &script);
+        sq_poptop(v);
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }
+    
+    sq_pushinteger(v, sqCompileBuffer(v, script, EMO_RUNTIME_CLASS));
+    
+    return 1;
+}
+#endif
+
+/*
+ * Returns the document directory
+ */
+SQInteger emoRuntimeGetDocumentDir(HSQUIRRELVM v) {
+    NSString* dir = [NSSearchPathForDirectoriesInDomains(
+                                                         NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    sq_pushstring(v, [[NSString stringWithFormat:@"%@/", dir] UTF8String], -1);
+    
+    return 1;
+}
+
+/*
+ * Check if the sandbox is enabled
+ */
+SQInteger emoRuntimeIsSandboxEnabled(HSQUIRRELVM v) {
+#ifdef EMO_WITH_SANDBOX
+    sq_pushbool(v, true);
+#else
+    sq_pushbool(v, false);
+#endif    
+    return 1;
 }
 
 /*
