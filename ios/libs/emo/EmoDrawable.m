@@ -85,10 +85,7 @@ extern EmoEngine* engine;
 	return (uptime - lastOnAnimationInterval) * 1000;
 }
 -(void)garbage {
-	NSInteger retainCount = [name retainCount];
-	if (retainCount > 0 && retainCount < NSIntegerMax) {
-		[name release];
-	}
+	[name release];
 	name = nil;
 }
 -(void)dealloc {
@@ -524,17 +521,11 @@ extern EmoEngine* engine;
 		return NSOrderedSame;
 	}
 }
--(void)garbage {
-	int retainCount = [name retainCount];
-	for (int i = 0; i < retainCount; i++) {
-		[name release];
-	}
-	name = nil;
-}
 -(void)dealloc {
 	[animations release];
+	[name release];
 	animations = nil;
-	[self garbage];
+	name = nil;
 	[super dealloc];
 }
 -(BOOL)isAnimationFinished {
