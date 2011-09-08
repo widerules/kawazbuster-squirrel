@@ -69,12 +69,17 @@ NSString* data2ns(NSData* data) {
 @synthesize database;
 @synthesize currentOrientation;
 @synthesize logLevel;
+@synthesize enableSimpleLog, enableSimpleLogWithLevel;
 
 - (id)init {
     self = [super init];
     if (self != nil) {
 		currentOrientation = OPT_ORIENTATION_UNSPECIFIED;
 		logLevel = LOG_INFO;
+        enableSimpleLog = FALSE;
+        enableSimpleLogWithLevel = FALSE;
+        
+        sqvm = sq_open(SQUIRREL_VM_INITIAL_STACK_SIZE);
     }
     return self;
 }
@@ -132,7 +137,9 @@ NSString* data2ns(NSData* data) {
 	
 	drawablesToDraw  = [NSArray alloc];
 	
-	sqvm = sq_open(SQUIRREL_VM_INITIAL_STACK_SIZE);
+    if (sqvm == nil) {
+        sqvm = sq_open(SQUIRREL_VM_INITIAL_STACK_SIZE);
+    }
 	
 	initSQVM(sqvm);
 	
@@ -237,18 +244,22 @@ NSString* data2ns(NSData* data) {
 		LOGE(chfname);
 		return ERR_SCRIPT_OPEN;
 	}
-	
-	NSString* nscontent = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error: nil];
-	if (nscontent == nil) {
-		LOGE("Script resource content does not found:");
-		LOGE(chfname);
-		return ERR_SCRIPT_OPEN;
-	}
-	
-	const char* script = [nscontent UTF8String];
-	const char* sourcename  = [path UTF8String];
-	
-	return sqCompileBuffer(v, script, sourcename);
+    
+    return [self loadScript:path vm:v];
+}
+
+/*
+ * callback function to read squirrel script
+ */
+static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInteger size) {
+    NSData* data = [(NSFileHandle*)file readDataOfLength:size];
+    NSUInteger len = [data length];
+    if (len > 0) {
+        [data getBytes:buf length:len];
+        return len;
+    } else {
+        return -1;
+    }
 }
 
 /*
@@ -261,6 +272,42 @@ NSString* data2ns(NSData* data) {
 		NSLOGE(path);
 		return ERR_SCRIPT_OPEN;
     }
+
+    NSFileHandle* file = [NSFileHandle fileHandleForReadingAtPath: path];
+	if (file == nil) {
+		LOGE("Script file does not found:");
+		NSLOGE(path);
+		return ERR_SCRIPT_OPEN;
+	}
+    
+    unsigned short magic_number;
+    [[file readDataOfLength: 2] getBytes:&magic_number length:2];
+    [file seekToFileOffset:0];
+    
+    // bytecode
+    if (magic_number == SQ_BYTECODE_STREAM_TAG) {
+        if (SQ_SUCCEEDED(sq_readclosure(v, sq_lexer_bytecode, file))) {
+            
+            [file closeFile];
+            
+            sq_pushroottable(v);
+            if (SQ_FAILED(sq_call(v, 1, SQFalse, SQTrue))) {
+                LOGE("Failed to call root closure:");
+                NSLOGE(path);
+                return ERR_SCRIPT_CALL_ROOT;
+            } else {
+                return EMO_NO_ERROR;
+            }
+        } else {
+            
+            [file closeFile];
+            
+            LOGE("Failed to read bytecode content:");
+            NSLOGE(path);
+            return ERR_SCRIPT_CALL_ROOT;
+        }
+    }  
+    [file closeFile];
     
 	NSString* nscontent = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error: nil];
 	if (nscontent == nil) {
