@@ -97,7 +97,7 @@ class CreditScene {
                 if (!fadingOut) {
                     fadingOut = true;
                     stage.load(TitleScene(),
-                        emo.AlphaModifier(1, 0, 500, emo.easing.Linear));
+                        null, emo.AlphaModifier(0, 1, 500, emo.easing.Linear));
                 }
             }
         }
