@@ -85,7 +85,7 @@ class HowToScene {
                 if (!fadingOut) {
                     fadingOut = true;
                     stage.load(TitleScene(),
-                        null, emo.AlphaModifier(0, 1, 500, emo.easing.Linear));
+                        null, emo.AlphaModifier(0, 1, 500, emo.easing.CubicOut));
                 }
             }
         }
