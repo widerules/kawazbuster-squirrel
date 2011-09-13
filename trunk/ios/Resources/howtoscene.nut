@@ -31,7 +31,6 @@ class HowToScene {
         foreground = emo.SpriteSheet(getHdImageName("howto.png"), bgWidth, bgHeight);
         foreground.moveCenter(stageCenterX, stageCenterY);
         foreground.setZ(2);
-        foreground.hide();
         foreground.load();
         
         foreground.animate(0, 2, 200, -1);
@@ -50,10 +49,7 @@ class HowToScene {
             foreground.getX() + foreground.getWidth()  - okButton.getWidth(),
             foreground.getY() + foreground.getHeight() - okButton.getHeight());
         okButton.setZ(3);
-        okButton.hide();
         okButton.load();
-        
-        fadeIn();
     }
     
     /*
@@ -68,33 +64,6 @@ class HowToScene {
      */
     function onLostFocus() {
         audio.pauseBGM();
-    }
-    
-    function fadeIn() {
-        local modifier = emo.AlphaModifier(0, 1, 500, emo.easing.CubicIn);
-        
-        okButton.addModifier(clone modifier);
-        foreground.addModifier(clone modifier);
-        background.addModifier(modifier);
-    }
-    
-    function fadeOut() {
-        local modifier = emo.AlphaModifier(1, 0, 500, emo.easing.Linear);
-        
-        okButton.addModifier(clone modifier);
-        foreground.addModifier(clone modifier);
-        background.addModifier(modifier);
-        
-        modifier.setEventListener(this);
-        
-    }
-    
-    // This function is called by modifier of the splash sprite.
-    // eventType equals EVENT_MODIFIER_FINISH if the modifier ends.
-    function onModifierEvent(obj, modifier, eventType) {
-        if (eventType == EVENT_MODIFIER_FINISH) {
-            stage.load(TitleScene());
-        }
     }
     
     function onDispose() {
@@ -115,7 +84,8 @@ class HowToScene {
                 audio.playSE0();
                 if (!fadingOut) {
                     fadingOut = true;
-                    fadeOut();
+                    stage.load(TitleScene(),
+                        emo.AlphaModifier(1, 0, 500, emo.easing.Linear));
                 }
             }
         }
