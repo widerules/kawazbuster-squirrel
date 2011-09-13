@@ -54,7 +54,7 @@ class LogoScene {
     function onDrawFrame(dt) {
         // disable onDraw listener because this is only one time event.
         event.disableOnDrawCallback();
-        stage.load(TitleScene(), null, emo.AlphaModifier(0, 1, 1000, emo.easing.Linear));
+        stage.load(TitleScene(), null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
     }
     
     // This function is called by modifier of the splash sprite.

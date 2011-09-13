@@ -156,7 +156,7 @@ class TitleScene {
                 if (!fadingOut) {
                     audio.stopBGM();
                     stage.load(MainLoadingScene(),
-                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.Linear));
+                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
                     fadingOut = true;
                 }
             } else if (creditButton.contains(x, y)) {
@@ -164,7 +164,7 @@ class TitleScene {
                 creditButton.setFrame(0);
                 if (!fadingOut) {
                     stage.load(CreditScene(),
-                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.Linear));
+                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
                     fadingOut = true;
                 }
             } else if (howtoButton.contains(x, y)) {
@@ -173,7 +173,7 @@ class TitleScene {
                 if (!fadingOut) {
                     nextScene = "howto";
                     stage.load(HowToScene(),
-                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.Linear));
+                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
                     fadingOut = true;
                 }
             }
