@@ -54,15 +54,15 @@ class LogoScene {
     function onDrawFrame(dt) {
         // disable onDraw listener because this is only one time event.
         event.disableOnDrawCallback();
-        stage.load(TitleScene());
+        stage.load(TitleScene(), null, emo.AlphaModifier(0, 1, 500, emo.easing.Linear));
     }
     
     // This function is called by modifier of the splash sprite.
     // eventType equals EVENT_MODIFIER_FINISH if the modifier ends.
     function onModifierEvent(obj, modifier, eventType) {
         if (eventType == EVENT_MODIFIER_FINISH) {
-            // onDrawFrame(dt) will be called 2 seconds later
-            event.enableOnDrawCallback(1500);
+            // onDrawFrame(dt) will be called 1 seconds later
+            event.enableOnDrawCallback(1000);
         }
     }
 }

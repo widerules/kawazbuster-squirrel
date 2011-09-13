@@ -27,6 +27,8 @@
 // 
 #include <sys/sysctl.h> 
 
+#import <OpenGLES/ES2/glext.h>
+
 #import "Constants.h"
 #import "VmFunc.h"
 #import "EmoRuntime.h"
@@ -70,6 +72,7 @@ NSString* data2ns(NSData* data) {
 @synthesize currentOrientation;
 @synthesize logLevel;
 @synthesize enableSimpleLog, enableSimpleLogWithLevel;
+@synthesize useOffscreen;
 
 - (id)init {
     self = [super init];
@@ -120,6 +123,7 @@ NSString* data2ns(NSData* data) {
 	database     = [[EmoDatabase alloc]init];
 	imageCache   = [[NSMutableDictionary alloc]init];
 	
+    [stage setBufferSize:width height:height];
 	[stage setSize:width height:height];
 	
 	// engine startup time
@@ -134,6 +138,9 @@ NSString* data2ns(NSData* data) {
 	onFpsInterval      = 0;
 	onFpsIntervalDelta = 0;
 	enableOnFps        = FALSE;
+    
+    useOffscreen = FALSE;
+    offscreenFramebuffer = 0;
 	
 	drawablesToDraw  = [NSArray alloc];
 	
@@ -156,6 +163,8 @@ NSString* data2ns(NSData* data) {
 	// disable "keep screen on"
 	[UIApplication sharedApplication].idleTimerDisabled = NO;
 	
+    if (useOffscreen) [self disableOffscreen];
+    
 	sq_close(sqvm);
 	sqvm = nil;
 	isRunning = FALSE;
@@ -185,6 +194,36 @@ NSString* data2ns(NSData* data) {
 	database = nil;
 	
 	return TRUE;
+}
+
+/*
+ * enable offscreen rendering
+ */
+- (void)enableOffscreen {
+    if (!useOffscreen && offscreenFramebuffer == 0) {
+        glGenFramebuffers(1, &offscreenFramebuffer);
+    }
+    useOffscreen = TRUE;
+}
+
+/*
+ * disable offscreen rendering
+ */
+- (void)disableOffscreen {
+    if (useOffscreen && offscreenFramebuffer != 0) {
+        glDeleteFramebuffers(1, &offscreenFramebuffer);
+        offscreenFramebuffer = 0;
+    }
+    useOffscreen = FALSE;
+}
+
+/*
+ * bind offscreen framebuffer
+ */
+- (void)bindOffscreenFramebuffer {
+    if (offscreenFramebuffer > 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, offscreenFramebuffer);
+    }
 }
 
 /*
@@ -347,11 +386,11 @@ static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInte
 /*
  * called when the app requests drawing
  */
--(BOOL)onDrawFrame {
+-(BOOL)onDrawFrame:(GLuint)framebuffer {
 	if (!isRunning) {
 		return FALSE;
 	}
-	
+    
 	if (sortOrderDirty) {
 		[drawablesToDraw release];
 		drawablesToDraw = [[[drawables allValues] sortedArrayUsingSelector:@selector(compareZ:)] retain];
@@ -386,15 +425,31 @@ static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInte
 		}
 	}
 	
-	
 	lastOnDrawDrawablesInterval = [self uptime];
-	[stage onDrawFrame:delta];
+	if (!useOffscreen) [stage onDrawFrame:delta];
 	for (int i = 0; i < [drawablesToDraw count]; i++) {
+        // if offscreen is enabled, the first drawable is
+        // the snapshot drawable that should be drawn last.
+        if (useOffscreen && i == 0) {
+            [self bindOffscreenFramebuffer];
+            [stage onDrawFrame:delta];
+            continue;
+        }
 		EmoDrawable* drawable = [drawablesToDraw objectAtIndex:i];
 		if (drawable.loaded && drawable.independent && [drawable isVisible]) {
 			[drawable onDrawFrame:delta withStage:stage];
 		}
 	}
+    
+    // render the offscreen result
+    if (useOffscreen && [drawablesToDraw count] > 0) {
+        // restore the default framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		EmoDrawable* drawable = [drawablesToDraw objectAtIndex:0];
+		if (drawable.loaded) {
+			[drawable onDrawFrame:delta withStage:stage];
+		}
+    }
 	
 	return FALSE;
 }
