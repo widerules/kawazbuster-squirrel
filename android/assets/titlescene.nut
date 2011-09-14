@@ -12,8 +12,8 @@ class TitleScene {
     stageCenterY = 0;
     
     fadingOut = false;
-    
-    nextScene = "main";
+
+    nextScene = null;
     
     /*
      * Called when this class is loaded
@@ -42,12 +42,7 @@ class TitleScene {
         logo.setZ(1);
         logo.load();
         
-        logo.hide();
-        background.hide();
-        
         loadMenu();
-        
-        fadeIn();
     }
     
     /*
@@ -104,11 +99,7 @@ class TitleScene {
             stage.getWindowWidth() * 0.5, stage.getWindowHeight() - startButton.getHeight());
         howtoButton.move(startButton.getX() - startButton.getWidth() - margin, startButton.getY());
         creditButton.move(startButton.getX() + startButton.getWidth() + margin, startButton.getY());
-    
-        startButton.hide();
-        creditButton.hide();
-        howtoButton.hide();
-        
+
         startButton.setFrame(1);
         creditButton.setFrame(1);
         howtoButton.setFrame(1);
@@ -151,43 +142,6 @@ class TitleScene {
         howtoButton = null;
         logo        = null;
     }
-    
-    function fadeIn() {
-        local modifier = emo.AlphaModifier(0, 1, 500, emo.easing.CubicIn);
-        
-        logo.addModifier(clone modifier);
-        startButton.addModifier(clone modifier);
-        creditButton.addModifier(clone modifier);
-        howtoButton.addModifier(clone modifier);
-        background.addModifier(modifier);
-    }
-    
-    function fadeOut() {
-        local modifier = emo.AlphaModifier(1, 0, 500, emo.easing.Linear);
-        
-        startButton.addModifier(clone modifier);
-        creditButton.addModifier(clone modifier);
-        howtoButton.addModifier(clone modifier);
-        background.addModifier(clone modifier);
-        
-        logo.addModifier(modifier);
-        modifier.setEventListener(this);
-        
-    }
-    
-    // This function is called by modifier of the splash sprite.
-    // eventType equals EVENT_MODIFIER_FINISH if the modifier ends.
-    function onModifierEvent(obj, modifier, eventType) {
-        if (eventType == EVENT_MODIFIER_FINISH) {
-            if (nextScene == "main") {
-                stage.load(MainLoadingScene());
-            } else if (nextScene == "howto") {
-                stage.load(HowToScene());
-            } else if (nextScene == "credit") {
-                stage.load(CreditScene());
-            }
-        }
-    }
         
     /*
      * touch event
@@ -200,17 +154,18 @@ class TitleScene {
                 audio.playSE0();
                 startButton.setFrame(0);
                 if (!fadingOut) {
-                    nextScene = "main";
                     audio.stopBGM();
-                    fadeOut();
+                    stage.load(MainLoadingScene(),
+                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
                     fadingOut = true;
                 }
             } else if (creditButton.contains(x, y)) {
                 audio.playSE0();
                 creditButton.setFrame(0);
                 if (!fadingOut) {
-                    nextScene = "credit";
-                    fadeOut();
+                    stage.load(CreditScene(),
+                        emo.MoveModifier([0, 0], [stage.getWindowWidth(), 0], 2000,
+                            emo.easing.BackIn), null, true);
                     fadingOut = true;
                 }
             } else if (howtoButton.contains(x, y)) {
@@ -218,7 +173,9 @@ class TitleScene {
                 howtoButton.setFrame(0);
                 if (!fadingOut) {
                     nextScene = "howto";
-                    fadeOut();
+                    stage.load(HowToScene(),
+                        emo.MoveModifier([0, 0], [-stage.getWindowWidth(), 0], 2000,
+                            emo.easing.BackIn), null, true);
                     fadingOut = true;
                 }
             }

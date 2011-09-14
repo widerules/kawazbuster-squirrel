@@ -711,19 +711,6 @@ class MainScene {
     }
 }
 
-/*
- * Finish the game when Home Key Button is pressed
- */
-function emo::onKeyEvent(kevent) {
-    if (kevent.getAction() == KEY_EVENT_ACTION_DOWN) {
-        if (kevent.getKeyCode() == KEYCODE_HOME) {
-            emo.Runtime.finish();
-            return true;
-        }
-    }
-    return false;
-}
-
 function emo::onLoad() {
     runtime.setOptions(OPT_ORIENTATION_LANDSCAPE_RIGHT);
         
