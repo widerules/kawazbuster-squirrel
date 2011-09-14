@@ -164,7 +164,8 @@ class TitleScene {
                 creditButton.setFrame(0);
                 if (!fadingOut) {
                     stage.load(CreditScene(),
-                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
+                        emo.MoveModifier([0, 0], [stage.getWindowWidth(), 0], 2000,
+                            emo.easing.BackIn), null, true);
                     fadingOut = true;
                 }
             } else if (howtoButton.contains(x, y)) {
@@ -173,7 +174,8 @@ class TitleScene {
                 if (!fadingOut) {
                     nextScene = "howto";
                     stage.load(HowToScene(),
-                        null, emo.AlphaModifier(0, 1, 1000, emo.easing.CubicOut));
+                        emo.MoveModifier([0, 0], [-stage.getWindowWidth(), 0], 2000,
+                            emo.easing.BackIn), null, true);
                     fadingOut = true;
                 }
             }
