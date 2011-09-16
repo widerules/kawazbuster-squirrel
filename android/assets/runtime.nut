@@ -441,9 +441,11 @@ class emo.Modifier {
     }
     function onPause() {
         pausedTime = EMO_RUNTIME_STOPWATCH.elapsed();
+        return this;
     }
     function onResume() {
         startTime = startTime + (EMO_RUNTIME_STOPWATCH.elapsed() - pausedTime);
+        return this;
     }
     function onUpdate() {
         if (!started) {
@@ -526,6 +528,98 @@ class emo.Modifier {
     }
 }
 
+class emo.ConcurrentModifier {
+    modifiers       = null;
+    name            = null;
+    eventCallback   = null;
+    listener        = null;
+    nextChain       = null;
+
+    function constructor(...) {
+        modifiers = [];
+        for (local i = 0; i < vargv.len(); i++) {
+            addModifier(vargv[i]);
+        }
+    }
+    
+    function addModifier(_modifier) {
+        _modifier.setEventListener(this);
+        _modifier.onResume();
+        
+        modifiers.append(_modifier);
+    }
+    
+    function onModifierEvent(targetObj, _modifier, eventType) {
+        if (eventType == EVENT_MODIFIER_FINISH) {
+            emo.Event().removeOnUpdateListener(_modifier);
+
+            local idx = modifiers.find(_modifier);
+            if (idx != null) modifiers.remove(idx);
+            if (modifiers.len() > 0) return;
+
+            emo.Event().removeOnUpdateListener(this);
+            if (eventCallback != null) {
+                eventCallback(targetObj, this, EVENT_MODIFIER_FINISH);
+            }
+            if (listener != null) {
+                listener.onModifierEvent(targetObj, this, EVENT_MODIFIER_FINISH);
+            }
+        }
+    }
+    
+    function setObject(obj) {
+        for (local i = 0; i < modifiers.len(); i++) {
+            modifiers[i].setObject(obj);
+        }
+    }
+
+    function setName(_name) {
+        name = _name;
+    }
+    
+    function onPause() {
+        for (local i = 0; i < modifiers.len(); i++) {
+            modifiers[i].onPause();
+        }
+    }
+    
+    function onResume() {
+        for (local i = 0; i < modifiers.len(); i++) {
+            modifiers[i].onResume();
+        }
+    }
+    
+    function onUpdate() {
+        for (local i = 0; i < modifiers.len(); i++) {
+            modifiers[i].onUpdate();
+        }
+    }
+    
+    function getObject() {
+        if (modifiers.len() > 0) {
+            return modifiers[0].getObject();
+        } else {
+            return null;
+        }
+    }
+    
+    function getName() {
+        return name;
+    }
+
+    function setEventCallback(func) {
+        eventCallback = func;
+    }
+    
+    function setEventListener(prnt) {
+        listener = prnt;
+    }
+    
+    function getEventListener() {
+        return listener;
+    }
+}
+
 class emo.SequenceModifier {
     modifiers       = null;
     name            = null;
@@ -536,6 +630,7 @@ class emo.SequenceModifier {
     repeatCount     = null;
     currentCount    = null;
     listener        = null;
+    nextChain       = null;
     
     function constructor(...) {
         modifiers = [];
@@ -830,12 +925,12 @@ function emo::easing::BounceOut(elapsed, duration, modifier) {
 }
 
 function emo::easing::BounceIn(elapsed, duration, modifier) {
-    return 1 - emo.easing.BounceOut(duration - elapsed, duration);
+    return 1 - emo.easing.BounceOut(duration - elapsed, duration, modifier);
 }
 
 function emo::easing::BounceInOut(elapsed, duration, modifier) {
     if (elapsed < duration / 2.0) return emo.easing.BounceIn(elapsed * 2.0, duration) * 0.5;
-    else return emo.easing.BounceOut(t * 2.0 - duration, duration) * 0.5 + 0.5;
+    else return emo.easing.BounceOut(t * 2.0 - duration, duration, modifier) * 0.5 + 0.5;
 }
 
 function emo::easing::ExpoIn(elapsed, duration, modifier) {
