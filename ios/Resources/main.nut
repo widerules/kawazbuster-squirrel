@@ -712,6 +712,8 @@ class MainScene {
 }
 
 function emo::onLoad() {
+    srand(time());
+
     runtime.setOptions(OPT_ORIENTATION_LANDSCAPE_RIGHT);
         
     local stageHeight = stage.getWindowHeight();
