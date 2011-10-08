@@ -1686,7 +1686,7 @@ SQInteger emoDrawableAnimate(HSQUIRRELVM v) {
     SQInteger interval = 0;
     SQInteger loop  = 0;
     
-    if (nargs >= 3 && sq_gettype(v, 3) != OT_NULL) {
+    if (nargs >= 3 && sq_gettype(v, 3) != OT_NULL && sq_gettype(v, 3) != OT_ARRAY) {
         sq_getinteger(v, 3, &start);
     }
     if (nargs >= 4 && sq_gettype(v, 4) != OT_NULL) {
@@ -1705,6 +1705,31 @@ SQInteger emoDrawableAnimate(HSQUIRRELVM v) {
     animation.count = count;
     animation.interval   = interval;
     animation.loop       = loop;
+
+    // if individual animation frames are specified, use these values
+    if (nargs >= 3 && sq_gettype(v, 3) == OT_ARRAY) {
+        count = sq_getsize(v, 3);
+        
+        animation.count = count;
+        [animation initializeFrames];
+        
+        sq_pushnull(v);
+        int idx = 0; 
+        while(SQ_SUCCEEDED(sq_next(v, -nargs+1))) {
+            if (idx >= count) break;
+            if (sq_gettype(v, -1) == OT_INTEGER) {
+                SQInteger value;
+                sq_getinteger(v, -1, &value);
+                [animation setFrame:idx withValue:value];
+            }
+            idx++;
+            sq_pop(v, 2);
+        }
+        
+        sq_pop(v, 1);
+        
+        if (animation.count > 0) animation.start = animation.frames[0];
+    }
     
     [drawable addAnimation:animation];
     [drawable setAnimation:animation.name];
