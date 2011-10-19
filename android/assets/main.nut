@@ -237,41 +237,27 @@ class MainLoadingScene {
             local foreStartX = background.getX();
             local foreStartY = background.getY() + background.getHeight() - (height * 0.70);
         
-            local sprite  = emo.SpriteSheet(getHdImageName("kawaztan.png"), width, height);
-            local damage  = emo.Sprite(getHdImageName("damage.png"));
-            local fire    = emo.Sprite(getHdImageName("bomb_effect.png"));
+            local sprite  = emo.SpriteSheet(getHdImageName("kawaztan.xml"));
             
             local zOrder = 200 + index;
             
             sprite.move(foreStartX + (spacing * index), foreStartY);
-            sprite.setFrame(3);
             sprite.hide();
             sprite.setZ(zOrder);
             sprite.load();
+            sprite.selectFrame("kawaz0");
             
-            damage.moveCenter(sprite.getCenterX(), sprite.getCenterY());
-            damage.setZ(zOrder);
-            damage.hide();
-            damage.load();
-            
-            fire.setZ(400);
-            fire.hide();
-            fire.load();
-            
-            targets.append(KawazTan(sprite, damage, fire));
+            targets.append(KawazTan(sprite));
         } else {
             local i = index - 6;
             
             local backStartX = background.getX() + background.getWidth() - width;
             local backStartY = stage.getWindowHeight() * 0.5;
             
-            local sprite  = emo.SpriteSheet(getHdImageName("kawaztan.png"), width, height);
-            local damage  = emo.Sprite(getHdImageName("damage.png"));
-            local fire    = emo.Sprite(getHdImageName("bomb_effect.png"));
+            local sprite  = emo.SpriteSheet(getHdImageName("kawaztan.xml"));
             
             local zOrder = 100 + i;
             
-            sprite.setFrame(1);
             if (i == 2) {
                 sprite.move(25, backStartY + (spacing * 0.5));
             } else {
@@ -280,17 +266,9 @@ class MainLoadingScene {
             sprite.hide();
             sprite.setZ(zOrder);
             sprite.load();
+            sprite.selectFrame("kawaz0");
             
-            damage.moveCenter(sprite.getCenterX(), sprite.getCenterY());
-            damage.setZ(zOrder);
-            damage.hide();
-            damage.load();
-            
-            fire.setZ(400);
-            fire.hide();
-            fire.load();
-            
-            targets.append(KawazTan(sprite, damage, fire));
+            targets.append(KawazTan(sprite));
         }
         
         return targets.len() < 9;
@@ -712,6 +690,8 @@ class MainScene {
 }
 
 function emo::onLoad() {
+    srand(time());
+
     runtime.setOptions(OPT_ORIENTATION_LANDSCAPE_RIGHT);
         
     local stageHeight = stage.getWindowHeight();

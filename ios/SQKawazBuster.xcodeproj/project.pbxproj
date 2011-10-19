@@ -128,10 +128,6 @@
 		F9D61F7413C7E78B0080EB42 /* howto.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F4C13C7E78B0080EB42 /* howto.png */; };
 		F9D61F7513C7E78B0080EB42 /* howto_button-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F4D13C7E78B0080EB42 /* howto_button-hd.png */; };
 		F9D61F7613C7E78B0080EB42 /* howto_button.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F4E13C7E78B0080EB42 /* howto_button.png */; };
-		F9D61F7713C7E78B0080EB42 /* bomb_effect-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5013C7E78B0080EB42 /* bomb_effect-hd.png */; };
-		F9D61F7813C7E78B0080EB42 /* bomb_effect.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5113C7E78B0080EB42 /* bomb_effect.png */; };
-		F9D61F7913C7E78B0080EB42 /* damage-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5213C7E78B0080EB42 /* damage-hd.png */; };
-		F9D61F7A13C7E78B0080EB42 /* damage.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5313C7E78B0080EB42 /* damage.png */; };
 		F9D61F7B13C7E78B0080EB42 /* kawaztan-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5413C7E78B0080EB42 /* kawaztan-hd.png */; };
 		F9D61F7C13C7E78B0080EB42 /* kawaztan.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5513C7E78B0080EB42 /* kawaztan.png */; };
 		F9D61F7D13C7E78B0080EB42 /* main_background-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D61F5613C7E78B0080EB42 /* main_background-hd.png */; };
@@ -183,6 +179,9 @@
 		F9D9239E1373D14A001AA3E0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F9D9239D1373D14A001AA3E0 /* libsqlite3.dylib */; };
 		F9DB370B136E257C00340476 /* runtime.nut in Resources */ = {isa = PBXBuildFile; fileRef = F9DB3709136E257C00340476 /* runtime.nut */; };
 		F9E41A43134494DE0009385D /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E41A42134494DE0009385D /* OpenAL.framework */; };
+		F9EEF0B4144E8E6200EFA8C9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9EEF0B3144E8E6200EFA8C9 /* CoreGraphics.framework */; };
+		F9EEF0B7144E8FC900EFA8C9 /* kawaztan-hd.xml in Resources */ = {isa = PBXBuildFile; fileRef = F9EEF0B5144E8FC900EFA8C9 /* kawaztan-hd.xml */; };
+		F9EEF0B8144E8FC900EFA8C9 /* kawaztan.xml in Resources */ = {isa = PBXBuildFile; fileRef = F9EEF0B6144E8FC900EFA8C9 /* kawaztan.xml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -396,10 +395,6 @@
 		F9D61F4C13C7E78B0080EB42 /* howto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = howto.png; sourceTree = "<group>"; };
 		F9D61F4D13C7E78B0080EB42 /* howto_button-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "howto_button-hd.png"; sourceTree = "<group>"; };
 		F9D61F4E13C7E78B0080EB42 /* howto_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = howto_button.png; sourceTree = "<group>"; };
-		F9D61F5013C7E78B0080EB42 /* bomb_effect-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bomb_effect-hd.png"; sourceTree = "<group>"; };
-		F9D61F5113C7E78B0080EB42 /* bomb_effect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bomb_effect.png; sourceTree = "<group>"; };
-		F9D61F5213C7E78B0080EB42 /* damage-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "damage-hd.png"; sourceTree = "<group>"; };
-		F9D61F5313C7E78B0080EB42 /* damage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = damage.png; sourceTree = "<group>"; };
 		F9D61F5413C7E78B0080EB42 /* kawaztan-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "kawaztan-hd.png"; sourceTree = "<group>"; };
 		F9D61F5513C7E78B0080EB42 /* kawaztan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kawaztan.png; sourceTree = "<group>"; };
 		F9D61F5613C7E78B0080EB42 /* main_background-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main_background-hd.png"; sourceTree = "<group>"; };
@@ -452,6 +447,9 @@
 		F9DB3708136E257C00340476 /* main.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.nut; path = Resources/main.nut; sourceTree = "<group>"; };
 		F9DB3709136E257C00340476 /* runtime.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runtime.nut; path = Resources/runtime.nut; sourceTree = "<group>"; };
 		F9E41A42134494DE0009385D /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		F9EEF0B3144E8E6200EFA8C9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		F9EEF0B5144E8FC900EFA8C9 /* kawaztan-hd.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "kawaztan-hd.xml"; sourceTree = "<group>"; };
+		F9EEF0B6144E8FC900EFA8C9 /* kawaztan.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = kawaztan.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -459,6 +457,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9EEF0B4144E8E6200EFA8C9 /* CoreGraphics.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
@@ -533,6 +532,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F9EEF0B3144E8E6200EFA8C9 /* CoreGraphics.framework */,
 				28FD15070DC6FC5B0079059D /* QuartzCore.framework */,
 				28FD14FF0DC6FC520079059D /* OpenGLES.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
@@ -911,10 +911,8 @@
 		F9D61F4F13C7E78B0080EB42 /* main */ = {
 			isa = PBXGroup;
 			children = (
-				F9D61F5013C7E78B0080EB42 /* bomb_effect-hd.png */,
-				F9D61F5113C7E78B0080EB42 /* bomb_effect.png */,
-				F9D61F5213C7E78B0080EB42 /* damage-hd.png */,
-				F9D61F5313C7E78B0080EB42 /* damage.png */,
+				F9EEF0B5144E8FC900EFA8C9 /* kawaztan-hd.xml */,
+				F9EEF0B6144E8FC900EFA8C9 /* kawaztan.xml */,
 				F9D61F5413C7E78B0080EB42 /* kawaztan-hd.png */,
 				F9D61F5513C7E78B0080EB42 /* kawaztan.png */,
 				F9D61F5613C7E78B0080EB42 /* main_background-hd.png */,
@@ -1030,10 +1028,6 @@
 				F9D61F7413C7E78B0080EB42 /* howto.png in Resources */,
 				F9D61F7513C7E78B0080EB42 /* howto_button-hd.png in Resources */,
 				F9D61F7613C7E78B0080EB42 /* howto_button.png in Resources */,
-				F9D61F7713C7E78B0080EB42 /* bomb_effect-hd.png in Resources */,
-				F9D61F7813C7E78B0080EB42 /* bomb_effect.png in Resources */,
-				F9D61F7913C7E78B0080EB42 /* damage-hd.png in Resources */,
-				F9D61F7A13C7E78B0080EB42 /* damage.png in Resources */,
 				F9D61F7B13C7E78B0080EB42 /* kawaztan-hd.png in Resources */,
 				F9D61F7C13C7E78B0080EB42 /* kawaztan.png in Resources */,
 				F9D61F7D13C7E78B0080EB42 /* main_background-hd.png in Resources */,
@@ -1096,6 +1090,8 @@
 				F901841C13CE440700C5E021 /* credit_button-hd.png in Resources */,
 				F901841D13CE440700C5E021 /* credit_button.png in Resources */,
 				F901847F13CE5B2100C5E021 /* creditscene.nut in Resources */,
+				F9EEF0B7144E8FC900EFA8C9 /* kawaztan-hd.xml in Resources */,
+				F9EEF0B8144E8FC900EFA8C9 /* kawaztan.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
