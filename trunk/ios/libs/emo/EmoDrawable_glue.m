@@ -43,6 +43,10 @@ void initDrawableFunctions() {
 	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "createLine",     emoDrawableCreateLine);
 	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "createSpriteSheet", emoDrawableCreateSpriteSheet);
 	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "loadSprite",     emoDrawableLoad);
+    
+	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "createFontSprite",     emoDrawableCreateFontSprite);
+	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "setFontSpriteParam",   emoDrawableSetFontSpriteParam);
+	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "reloadFontSprite",     emoDrawableReloadFontSprite);
 
 	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "createSnapshot",   emoDrawableCreateSnapshot);
 	registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "createMapSprite",     emoDrawableCreateMapSprite);
@@ -100,6 +104,7 @@ void initDrawableFunctions() {
     registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "loadSnapshot",   emoDrawableLoadSnapshot);
     registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "stopSnapshot",   emoDrawableDisableSnapshot);
     registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "removeSnapshot",   emoDrawableRemoveSnapshot);
+    registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "selectFrame",    emoDrawableSelectFrame);
 }
 
 /*
@@ -126,8 +131,7 @@ SQInteger emoDrawableCreateSprite(HSQUIRRELVM v) {
     int width  = 0;
     int height = 0;
 	
-    if (drawable.name != nil && (!loadPngSizeFromAsset(drawable.name, 
-				&width, &height) || width <= 0 || height <= 0)) {
+    if (drawable.name != nil && !loadPngSizeFromAsset(drawable.name, &width, &height)) {
         [drawable release];
         return 0;
     }
@@ -147,6 +151,71 @@ SQInteger emoDrawableCreateSprite(HSQUIRRELVM v) {
 	
 	[drawable release];
 	
+    return 1;
+}
+
+/*
+ * create font drawable instance (single sprite)
+ * 
+ * @param property name that indicates the text string
+ * @return drawable id
+ */
+SQInteger emoDrawableCreateFontSprite(HSQUIRRELVM v) {
+    
+    EmoFontDrawable* drawable = [[EmoFontDrawable alloc]init];
+    [drawable initDrawable];
+    
+    const SQChar* name;
+    SQInteger nargs = sq_gettop(v);
+    if (nargs >= 2 && sq_gettype(v, 2) == OT_STRING) {
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &name);
+        
+        if (strlen(name) > 0) {
+            drawable.name = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+        }
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }
+    
+    int fontSize = 0;
+    
+    if (nargs >= 3 && sq_gettype(v, 3) != OT_NULL) {
+        sq_getinteger(v, 3, &fontSize);
+    }
+    if (nargs >= 4 && sq_gettype(v, 4) == OT_STRING) {
+        const SQChar* fontFace;
+        sq_tostring(v, 4);
+        sq_getstring(v, -1, &fontFace);
+        
+        if (strlen(fontFace) > 0) {
+            drawable.fontFace = [NSString stringWithCString:fontFace encoding:NSUTF8StringEncoding];
+        }
+    }
+    if (nargs >= 5 && sq_gettype(v, 5) == OT_BOOL) {
+        SQBool flag;
+        sq_getbool(v, 5, &flag);
+        drawable.isBold = flag ? TRUE : FALSE;
+    }
+    if (nargs >= 6 && sq_gettype(v, 6) == OT_BOOL) {
+        SQBool flag;
+        sq_getbool(v, 6, &flag);
+        drawable.isItalic = flag ? TRUE : FALSE;
+    }
+    
+    drawable.fontSize = fontSize;
+    drawable.useFont  = TRUE;
+    
+    [drawable createTextureBuffer];
+    
+    char key[DRAWABLE_KEY_LENGTH];
+	[drawable updateKey:key];
+    [engine addDrawable:drawable withKey:key];
+	
+    sq_pushstring(v, key, strlen(key));
+    
+	[drawable release];
     return 1;
 }
 
@@ -220,6 +289,11 @@ SQInteger emoDrawableCreateSpriteSheet(HSQUIRRELVM v) {
 		
         if (strlen(name) > 0) {
 			drawable.name = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+            
+            // if the filename ends with .xml, assumes texture is packed as atlas
+            if ([drawable.name hasSuffix:@".xml"]) {
+                drawable.isPackedAtlas = TRUE;
+            }
         }
     } else {
 		drawable.name = nil;
@@ -243,34 +317,47 @@ SQInteger emoDrawableCreateSpriteSheet(HSQUIRRELVM v) {
     if (nargs >= 7 && sq_gettype(v, 7) != OT_NULL) {
         sq_getinteger(v, 7, &margin);
     }
-	
+
+    if ([drawable isPackedAtlas]) {
+        if (![drawable loadPackedAtlasXml:frameIndex]) {
+            [drawable release];
+            return 0;
+        }
+        
+        // retrieve image filename to load
+        name = [drawable.name UTF8String];
+    }
+    
     int width  = 0;
     int height = 0;
     
-    if ((drawable.name != nil && !loadPngSizeFromAsset(drawable.name, &width, &height)) || 
-		(width <= 0 || height <= 0 || frameWidth <= 0 || frameHeight <= 0)) {
+    if (drawable.name != nil && !loadPngSizeFromAsset(drawable.name, &width, &height)) {
         [drawable release];
         return 0;
     }
 	
     drawable.hasSheet = true;
-    drawable.frame_index = frameIndex;
-    drawable.width  = frameWidth;
-    drawable.height = frameHeight;
-	drawable.frameWidth  = frameWidth;
-	drawable.frameHeight = frameHeight;
-    drawable.border = border;
+    
+    if (!drawable.isPackedAtlas) {
+        drawable.width  = frameWidth;
+        drawable.height = frameHeight;
+        drawable.frameWidth  = frameWidth;
+        drawable.frameHeight = frameHeight;
+        drawable.border = border;
 	
-    if (margin == 0 && border != 0) {
-        drawable.margin = border;
-    } else {
-        drawable.margin = margin;
+        if (margin == 0 && border != 0) {
+            drawable.margin = border;
+        } else {
+            drawable.margin = margin;
+        }
+	
+        drawable.frameCount = (int)floor(width / (float)(frameWidth  + border)) 
+        * floor(height /(float)(frameHeight + border));
     }
-	
-    drawable.frameCount = (int)floor(width / (float)(frameWidth  + border)) 
-	* floor(height /(float)(frameHeight + border));
+    
     if (drawable.frameCount <= 0) drawable.frameCount = 1;
 	
+    [drawable setFrameIndex:frameIndex];
     [drawable createTextureBuffer];
 	
     char key[DRAWABLE_KEY_LENGTH];
@@ -281,6 +368,125 @@ SQInteger emoDrawableCreateSpriteSheet(HSQUIRRELVM v) {
 	
 	[drawable release];
 	
+    return 1;
+}
+
+/*
+ * Set parameters of FontSprite
+ */
+SQInteger emoDrawableSetFontSpriteParam(HSQUIRRELVM v) {
+    const SQChar* id;
+    SQInteger nargs = sq_gettop(v);
+    if (nargs >= 2 && sq_gettype(v, 2) == OT_STRING) {
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &id);
+        sq_poptop(v);
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }
+    
+    EmoFontDrawable* drawable = (EmoFontDrawable*)[engine getDrawable:id];
+    
+    if (drawable == nil) {
+        sq_pushinteger(v, ERR_INVALID_ID);
+        return 1;
+    }
+    
+    if (nargs >= 3 && sq_gettype(v, 3) == OT_STRING) {
+        const SQChar* param;
+        sq_tostring(v, 3);
+        sq_getstring(v, -1, &param);
+        drawable.param1 = [NSString stringWithCString:param encoding:NSUTF8StringEncoding];
+    }
+    if (nargs >= 4 && sq_gettype(v, 4) == OT_STRING) {
+        const SQChar* param;
+        sq_tostring(v, 4);
+        sq_getstring(v, -1, &param);
+        drawable.param2 = [NSString stringWithCString:param encoding:NSUTF8StringEncoding];
+    }
+    if (nargs >= 5 && sq_gettype(v, 5) == OT_STRING) {
+        const SQChar* param;
+        sq_tostring(v, 5);
+        sq_getstring(v, -1, &param);
+        drawable.param3 = [NSString stringWithCString:param encoding:NSUTF8StringEncoding];
+        sq_poptop(v);
+    }
+    if (nargs >= 6 && sq_gettype(v, 6) == OT_STRING) {
+        const SQChar* param;
+        sq_tostring(v, 6);
+        sq_getstring(v, -1, &param);
+        drawable.param4 = [NSString stringWithCString:param encoding:NSUTF8StringEncoding];
+        sq_poptop(v);
+    }
+    if (nargs >= 7 && sq_gettype(v, 7) == OT_STRING) {
+        const SQChar* param;
+        sq_tostring(v, 7);
+        sq_getstring(v, -1, &param);
+        drawable.param5 = [NSString stringWithCString:param encoding:NSUTF8StringEncoding];
+        sq_poptop(v);
+    }
+    if (nargs >= 8 && sq_gettype(v, 8) == OT_STRING) {
+        const SQChar* param;
+        sq_tostring(v, 8);
+        sq_getstring(v, -1, &param);
+        drawable.param6 = [NSString stringWithCString:param encoding:NSUTF8StringEncoding];
+        sq_poptop(v);
+    }
+    
+    sq_pushinteger(v, EMO_NO_ERROR);
+    
+    return 1;
+}
+
+/*
+ * Reload parameter of FontSprite
+ */
+SQInteger emoDrawableReloadFontSprite(HSQUIRRELVM v) {
+    const SQChar* id;
+    SQInteger nargs = sq_gettop(v);
+    if (nargs >= 2 && sq_gettype(v, 2) == OT_STRING) {
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &id);
+        sq_poptop(v);
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }
+    
+    EmoFontDrawable* drawable = (EmoFontDrawable*)[engine getDrawable:id];
+    
+    if (drawable == nil) {
+        sq_pushinteger(v, ERR_INVALID_ID);
+        return 1;
+    }
+    
+    const SQChar* name;
+    if (nargs >= 3 && sq_gettype(v, 3) == OT_STRING) {
+        sq_tostring(v, 3);
+        sq_getstring(v, -1, &name);
+        
+        [engine removeCachedImage:drawable.name];
+        drawable.name = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+        [engine addCachedImage:drawable.name value:drawable.texture];
+        
+    }
+    
+    [drawable doUnload:FALSE];
+    [drawable createTextureBuffer];
+    
+    [drawable loadTextBitmap];
+    
+    drawable.width  = drawable.texture.width;
+    drawable.height = drawable.texture.height;
+    drawable.frameWidth  = drawable.texture.width;
+    drawable.frameHeight = drawable.texture.height;
+    
+    [drawable.texture genTextures];
+    [drawable bindVertex];
+    
+    sq_pushinteger(v, EMO_NO_ERROR);
+    
     return 1;
 }
 
@@ -316,6 +522,32 @@ SQInteger emoDrawableLoad(HSQUIRRELVM v) {
 			drawable.hasTexture = TRUE;
 			
 			imageInfo.referenceCount++;
+        } else if (drawable.useFont) {
+			imageInfo = [[EmoImage alloc]init];
+            drawable.texture = imageInfo;
+            
+            [(EmoFontDrawable*)drawable loadTextBitmap];
+            
+            drawable.width  = imageInfo.width;
+            drawable.height = imageInfo.height;
+            drawable.frameWidth  = imageInfo.width;
+            drawable.frameHeight = imageInfo.height;
+            
+            // calculate the size of power of two
+            imageInfo.glWidth  = nextPowerOfTwo(imageInfo.width);
+            imageInfo.glHeight = nextPowerOfTwo(imageInfo.height);
+            imageInfo.loaded = FALSE;
+            
+            drawable.hasTexture = TRUE;
+			
+            imageInfo.referenceCount++;
+            
+            // assign OpenGL texture id
+            [imageInfo genTextures];
+            
+            [engine addCachedImage:drawable.name value:imageInfo];
+            
+			[imageInfo release];
 		} else {
 			imageInfo = [[EmoImage alloc]init];
 			if (loadPngFromResource(drawable.name, imageInfo)) {
@@ -1608,6 +1840,48 @@ SQInteger emoDrawablePauseAt(HSQUIRRELVM v) {
 		return 1;
 	}
 	
+    sq_pushinteger(v, EMO_NO_ERROR);
+    return 1;
+}
+
+/*
+ * select frame that has given name 
+ */
+SQInteger emoDrawableSelectFrame(HSQUIRRELVM v) { 
+    
+    const SQChar* id;
+    SQInteger nargs = sq_gettop(v);
+    if (nargs >= 2 && sq_gettype(v, 2) == OT_STRING) {
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &id);
+        sq_poptop(v);
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }    
+    
+    EmoDrawable* drawable = [engine getDrawable:id];
+    
+    if (drawable == NULL) {
+        sq_pushinteger(v, ERR_INVALID_ID);
+        return 1;
+    }    
+    
+    const SQChar* frame_name;
+    if (nargs >= 3 && sq_gettype(v, 3) == OT_STRING) {
+        sq_tostring(v, 3);
+        sq_getstring(v, -1, &frame_name);
+        sq_poptop(v);
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }    
+    
+    if (![drawable selectFrame:char2ns(frame_name)]) {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }    
+    
     sq_pushinteger(v, EMO_NO_ERROR);
     return 1;
 }

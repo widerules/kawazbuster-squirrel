@@ -23,8 +23,6 @@ enum KawazType {
 
 class KawazTan {
     target = null;
-    damageSprite = null;
-    fireSprite = null;
     
     status = KawazState.WAITING;
     type   = KawazType.NORMAL;
@@ -36,10 +34,8 @@ class KawazTan {
     x = null;
     y = null;
     
-    function constructor(_kawaz, _damage, _fire) {
+    function constructor(_kawaz) {
         target = _kawaz;
-        damageSprite = _damage;
-        fireSprite = _fire;
         
         x = target.getX();
         y = target.getY();
@@ -48,16 +44,19 @@ class KawazTan {
     function show() {
         if (status != KawazState.WAITING) return;
         if (kawazOn) return;
+        
         kawazOn = true;
         
         local frame = rand() % 4;
-        type = frame == 0 ? KawazType.BOMB : KawazType.NORMAL;
-        
+        type = frame == 3 ? KawazType.BOMB : KawazType.NORMAL;
+
+        local frame_name = "bomb";
         if (type == KawazType.BOMB) {
             audio.playSE2();
+        } else {
+            frame_name = "kawaz" + frame;
         }
-        
-        target.setFrame(frame);
+        target.selectFrame(frame_name);
         
         status = KawazState.MOVING;
         
@@ -117,35 +116,37 @@ class KawazTan {
     }
     
     function damage() {
-        damageSprite.moveCenter(target.getCenterX(), target.getCenterY());
-        audio.playSE0();
-        hide();
-        damageSprite.show();
+        local nX = target.getCenterX();
+        local nY = target.getCenterY();
         
-        damageSprite.clearModifier();
+        target.selectFrame("damage");
+        target.moveCenter(nX, nY);
+        audio.playSE0();
+        audio.stopSE2();
+        
+        target.clearModifier();
         
         damageModifier = emo.NoopModifier(250);
         damageModifier.setEventListener(this);
-        damageSprite.addModifier(damageModifier);
+        target.addModifier(damageModifier);
     }
     
     function fire() {
-        fireSprite.moveCenter(target.getCenterX(), target.getCenterY());
+        local nX = target.getCenterX();
+        local nY = target.getCenterY();
+        target.selectFrame("bomb_effect");
+        target.moveCenter(nX, nY);
         audio.playSE1();
-        hide();
-        fireSprite.show();
         
-        fireSprite.clearModifier();
+        target.clearModifier();
         
         damageModifier = emo.NoopModifier(250);
         damageModifier.setEventListener(this);
-        fireSprite.addModifier(damageModifier);
+        target.addModifier(damageModifier);
     }
     
     function remove() {
         target.remove();
-        damageSprite.remove();
-        fireSprite.remove();
     }
     
     // This function is called by modifier of the splash sprite.
@@ -161,8 +162,7 @@ class KawazTan {
                 status = KawazState.WAITING;
                 kawazOn = false;
             } else if (modifier == damageModifier) {
-                damageSprite.hide();
-                fireSprite.hide();
+                hide();
                 status = KawazState.WAITING;
                 kawazOn = false;
             }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Imageset Name="kawaztan-hd" Imagefile="kawaztan-hd.png" NativeHorzRes="841" NativeVertRes="841" AutoScaled="false">
+    <Image Name="bomb" XPos="0" YPos="304" Width="275" Height="300"/>
+    <Image Name="bomb_effect" XPos="431" YPos="0" Width="410" Height="400"/>
+    <Image Name="damage" XPos="0" YPos="0" Width="431" Height="304"/>
+    <Image Name="kawaz0" XPos="275" YPos="700" Width="275" Height="300"/>
+    <Image Name="kawaz1" XPos="275" YPos="400" Width="275" Height="300"/>
+    <Image Name="kawaz2" XPos="0" YPos="604" Width="275" Height="300"/>
+</Imageset>

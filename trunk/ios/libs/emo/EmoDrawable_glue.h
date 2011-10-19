@@ -44,6 +44,10 @@ SQInteger emoDrawableGetTileIndexAtCoord(HSQUIRRELVM v);
 SQInteger emoDrawableGetTilePositionAtCoord(HSQUIRRELVM v);
 SQInteger emoDrawableUseMeshMapSprite(HSQUIRRELVM v);
 
+SQInteger emoDrawableCreateFontSprite(HSQUIRRELVM v);
+SQInteger emoDrawableSetFontSpriteParam(HSQUIRRELVM v);
+SQInteger emoDrawableReloadFontSprite(HSQUIRRELVM v);
+
 SQInteger emoDrawableLoad(HSQUIRRELVM v);
 SQInteger emoDrawableMove(HSQUIRRELVM v);
 SQInteger emoDrawableScale(HSQUIRRELVM v);
@@ -68,6 +72,8 @@ SQInteger emoDrawablePause(HSQUIRRELVM v);
 SQInteger emoDrawableStop(HSQUIRRELVM v);
 SQInteger emoDrawableAnimate(HSQUIRRELVM v);
 SQInteger emoDrawableIsAnimationFinished(HSQUIRRELVM v);
+
+SQInteger emoDrawableSelectFrame(HSQUIRRELVM v);
 
 SQInteger emoDrawableGetX(HSQUIRRELVM v);
 SQInteger emoDrawableGetY(HSQUIRRELVM v);
