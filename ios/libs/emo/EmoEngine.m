@@ -621,12 +621,9 @@ static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInte
 -(BOOL)removeDrawable:(const char*)key {
 	NSString* _key = char2ns(key);
 
-	[_key retain];
 	EmoDrawable* drawable = [drawables objectForKey:_key];
 	[drawable doUnload:TRUE];
-	[drawable release];
 	[drawables removeObjectForKey:_key];
-	[_key release];
 
 	sortOrderDirty = TRUE;
 	return TRUE;
@@ -636,7 +633,6 @@ static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInte
 	
 	for (NSString* key in drawables) {
 		[[drawables objectForKey:key] doUnload:TRUE];
-		[[drawables objectForKey:key] release];
 	}
 	
 	[drawables removeAllObjects];
@@ -645,7 +641,6 @@ static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInte
 }
 
 -(void)addDrawable:(EmoDrawable*)drawable withKey:(const char*)key {
-	[drawable retain];
 	[drawables setObject:drawable forKey: char2ns(key)];
 	sortOrderDirty = TRUE;
 }
@@ -656,12 +651,12 @@ static SQInteger sq_lexer_bytecode(SQUserPointer file, SQUserPointer buf, SQInte
 	
 	[netTasks setObject:net forKey:taskName];
 	
+    [net release];
+    
 	return net;
 }
 
 -(void)removeNetTask:(NSString*)taskName {
-	EmoNetTask* netTask = [netTasks objectForKey:taskName];
-	[netTask release];
 	[netTasks removeObjectForKey:taskName];
 }
 
