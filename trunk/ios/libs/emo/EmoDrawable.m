@@ -240,7 +240,6 @@ extern EmoEngine* engine;
 }
 
 -(void)addImagePack:(EmoImagePackInfo*) info {
-	[info retain];
 	[self deleteImagePack:info.name];
 	[imagepacks setObject:info forKey:info.name];
     [imagepacks_names addObject:info.name];
@@ -255,16 +254,12 @@ extern EmoEngine* engine;
     
 	if (info == nil) return FALSE;
 	
-	[info release];
 	[imagepacks removeObjectForKey:_name];
 	
 	return TRUE;
 }
 
 -(void)deleteImagePacks {
-	for (NSString* key in imagepacks) {
-		[[imagepacks objectForKey:key] release];
-	}
 	[imagepacks removeAllObjects];
 }
 
@@ -650,7 +645,6 @@ extern EmoEngine* engine;
 }
 
 -(void)addAnimation:(EmoAnimationFrame*)animation {
-	[animation retain];
 	[self deleteAnimation:animation.name];
 	[animations setObject:animation forKey:animation.name];
 }
@@ -674,16 +668,12 @@ extern EmoEngine* engine;
 
 	if (animation == nil) return FALSE;
 	
-	[animation release];
 	[animations removeObjectForKey:_name];
 	
 	return TRUE;
 }
 
 -(void)deleteAnimations {
-	for (NSString* key in animations) {
-		[[animations objectForKey:key] release];
-	}
 	[animations removeAllObjects];
 }
 
