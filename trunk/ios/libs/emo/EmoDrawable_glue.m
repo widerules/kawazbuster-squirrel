@@ -131,7 +131,7 @@ SQInteger emoDrawableCreateSprite(HSQUIRRELVM v) {
     int width  = 0;
     int height = 0;
 	
-    if (drawable.name != nil && !loadPngSizeFromAsset(drawable.name, &width, &height)) {
+    if (drawable.name != nil && !loadImageSizeFromResource(drawable.name, &width, &height)) {
         [drawable release];
         return 0;
     }
@@ -331,7 +331,7 @@ SQInteger emoDrawableCreateSpriteSheet(HSQUIRRELVM v) {
     int width  = 0;
     int height = 0;
     
-    if (drawable.name != nil && !loadPngSizeFromAsset(drawable.name, &width, &height)) {
+    if (drawable.name != nil && !loadImageSizeFromResource(drawable.name, &width, &height)) {
         [drawable release];
         return 0;
     }
@@ -550,7 +550,7 @@ SQInteger emoDrawableLoad(HSQUIRRELVM v) {
 			[imageInfo release];
 		} else {
 			imageInfo = [[EmoImage alloc]init];
-			if (loadPngFromResource(drawable.name, imageInfo)) {
+			if (loadImageFromResource(drawable.name, imageInfo)) {
 		
 				// calculate the size of power of two
 				imageInfo.glWidth  = nextPowerOfTwo(imageInfo.width);
@@ -754,7 +754,7 @@ SQInteger emoDrawableLoadMapSprite(HSQUIRRELVM v) {
 			imageInfo.referenceCount++;
 		} else {
 			imageInfo = [[EmoImage alloc]init];
-			if (loadPngFromResource(drawable.name, imageInfo)) {
+			if (loadImageFromResource(drawable.name, imageInfo)) {
 				
 				// calculate the size of power of two
 				imageInfo.glWidth  = nextPowerOfTwo(imageInfo.width);
@@ -1834,7 +1834,11 @@ SQInteger emoDrawablePauseAt(HSQUIRRELVM v) {
 		sq_pushinteger(v, ERR_INVALID_PARAM);
 		return 1;
 	}
-	
+
+    if (!drawable.loaded) {
+        LOGW("It is recommended not to use SpriteSheet#setFrame BEFORE the sprite is loaded by load().");
+    }
+    
 	if (![drawable pauseAt:index]) {
 		sq_pushinteger(v, ERR_INVALID_PARAM);
 		return 1;
@@ -1875,7 +1879,11 @@ SQInteger emoDrawableSelectFrame(HSQUIRRELVM v) {
     } else {
         sq_pushinteger(v, ERR_INVALID_PARAM);
         return 1;
-    }    
+    }
+    
+    if (!drawable.loaded) {
+        LOGW("It is recommended not to use SpriteSheet#selectFrame BEFORE the sprite is loaded by load().");
+    }
     
     if (![drawable selectFrame:char2ns(frame_name)]) {
         sq_pushinteger(v, ERR_INVALID_PARAM);
