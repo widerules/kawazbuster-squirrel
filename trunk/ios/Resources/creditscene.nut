@@ -26,7 +26,7 @@ class CreditScene {
             background.remove();
         }
         
-        background = emo.Sprite(getHdImageName("credit_background.pvr"));
+        background = emo.Sprite(getHdImageName("credit_background.png"));
         background.moveCenter(stageCenterX, stageCenterY);
         background.setZ(0);
         background.load();
