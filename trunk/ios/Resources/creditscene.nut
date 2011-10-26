@@ -26,7 +26,7 @@ class CreditScene {
             background.remove();
         }
         
-        background = emo.Sprite(getHdImageName("credit_background.png"));
+        background = emo.Sprite(getHdImageName("credit_background.pvr"));
         background.moveCenter(stageCenterX, stageCenterY);
         background.setZ(0);
         background.load();
@@ -53,12 +53,12 @@ class CreditScene {
         }
         
         okButton = emo.SpriteSheet(getHdImageName("credit_button.png"), btWidth, btHeight);
-        okButton.setFrame(1);
         okButton.move(
             foreground.getX() + foreground.getWidth()  - okButton.getWidth(),
             foreground.getY() + foreground.getHeight() - okButton.getHeight());
         okButton.setZ(3);
         okButton.load();
+        okButton.setFrame(1);
     }
     
     /*

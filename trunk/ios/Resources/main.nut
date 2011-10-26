@@ -319,18 +319,18 @@ class MainLoadingScene {
         
         if (index == 0) {
             return_button = emo.SpriteSheet(getHdImageName("result_button.png"), width, height);
-            return_button.setFrame(2);
             return_button.hide();
             return_button.setZ(400);
             return_button.moveCenter(stageCenterX + (width * 0.5) + 10, menuStartY);
             return_button.load();
+            return_button.setFrame(2);
         } else if (index == 1) {
             retry_button  = emo.SpriteSheet(getHdImageName("result_button.png"), width, height);
-            retry_button.setFrame(3);
             retry_button.hide();
             retry_button.setZ(400);
             retry_button.moveCenter(stageCenterX  - (width * 0.5) - 10, menuStartY);
             retry_button.load();
+            retry_button.setFrame(3);
         }
         
     }

@@ -1223,6 +1223,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SQKawazBuster_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = (
+					libs/squirrel/include,
+					libs/emo,
+					libs/libpng,
+					libs,
+				);
 				INFOPLIST_FILE = "SQKawazBuster-Info.plist";
 				PRODUCT_NAME = SQKawazBuster;
 				VALIDATE_PRODUCT = YES;

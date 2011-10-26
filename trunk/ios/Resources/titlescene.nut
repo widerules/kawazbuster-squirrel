@@ -100,13 +100,13 @@ class TitleScene {
         howtoButton.move(startButton.getX() - startButton.getWidth() - margin, startButton.getY());
         creditButton.move(startButton.getX() + startButton.getWidth() + margin, startButton.getY());
 
-        startButton.setFrame(1);
-        creditButton.setFrame(1);
-        howtoButton.setFrame(1);
-            
         startButton.load();
         creditButton.load();
         howtoButton.load();
+        
+        startButton.setFrame(1);
+        creditButton.setFrame(1);
+        howtoButton.setFrame(1);
     }
     
     /*
