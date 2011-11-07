@@ -25,41 +25,15 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-#import "UIKit/UIKit.h"
-#import "OpenGLES/EAGL.h"
-#import "OpenGLES/ES1/gl.h"
-#import "OpenGLES/ES1/glext.h"
+#import "EmoDrawable.h"
 
-#import "Constants.h"
-#import "EmoEngine.h"
-#import "EmoView.h"
-
-@interface EmoViewController : UIViewController <EmoViewEventHandler>
-{
-    EAGLContext *context;
-    
-    BOOL animating;
-    NSInteger animationFrameInterval;
-    CADisplayLink *displayLink;
-	
-	NSMutableDictionary *touchIdMaster;
-	float touchEventParamCache[MOTION_EVENT_PARAMS_SIZE];
-	NSInteger nextTouchId;
-	
-	NSString* runtimeScript;
-	NSString* mainScript;
+@interface EmoLineDrawable : EmoDrawable {
+	float x2, y2;
 }
+@property (readwrite) float x2;
+@property (readwrite) float y2;
 
-@property (readonly, nonatomic, getter=isAnimating) BOOL animating;
-@property (nonatomic) NSInteger animationFrameInterval;
-@property (readwrite, copy) NSString* runtimeScript;
-@property (readwrite, copy) NSString* mainScript;
-
-- (void)onLoad;
-- (void)startAnimation;
-- (void)onGainedFocus;
-- (void)onLostFocus;
-- (void)stopAnimation;
-- (void)onDispose;
--(NSInteger)getOrientationOption;
+-(void)initDrawable;
+-(BOOL)bindVertex;
+-(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage;
 @end

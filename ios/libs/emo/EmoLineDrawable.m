@@ -25,41 +25,51 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-#import "UIKit/UIKit.h"
-#import "OpenGLES/EAGL.h"
-#import "OpenGLES/ES1/gl.h"
-#import "OpenGLES/ES1/glext.h"
+#import "EmoLineDrawable.h"
 
-#import "Constants.h"
-#import "EmoEngine.h"
-#import "EmoView.h"
+@implementation EmoLineDrawable
+@synthesize x2, y2;
 
-@interface EmoViewController : UIViewController <EmoViewEventHandler>
-{
-    EAGLContext *context;
-    
-    BOOL animating;
-    NSInteger animationFrameInterval;
-    CADisplayLink *displayLink;
+-(void)initDrawable {
+	[super initDrawable];
 	
-	NSMutableDictionary *touchIdMaster;
-	float touchEventParamCache[MOTION_EVENT_PARAMS_SIZE];
-	NSInteger nextTouchId;
+	x2 = 0;
+	y2 = 0;
 	
-	NSString* runtimeScript;
-	NSString* mainScript;
+    param_color[0] = 0;
+    param_color[1] = 1;
+    param_color[2] = 0;
 }
 
-@property (readonly, nonatomic, getter=isAnimating) BOOL animating;
-@property (nonatomic) NSInteger animationFrameInterval;
-@property (readwrite, copy) NSString* runtimeScript;
-@property (readwrite, copy) NSString* mainScript;
+-(BOOL)bindVertex {
+	loaded = TRUE;
+	return TRUE;
+}
 
-- (void)onLoad;
-- (void)startAnimation;
-- (void)onGainedFocus;
-- (void)onLostFocus;
-- (void)stopAnimation;
-- (void)onDispose;
--(NSInteger)getOrientationOption;
+-(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage {
+	if (!loaded) return FALSE;
+	
+	vertex_tex_coords[0] = x;
+	vertex_tex_coords[1] = y;
+	vertex_tex_coords[2] = x2;
+	vertex_tex_coords[3] = y2;
+	
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity (); 
+	
+	glDisable(GL_TEXTURE_2D);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glLineWidth(width);
+	
+    // update colors
+    glColor4f(param_color[0], param_color[1], param_color[2], param_color[3]);
+	
+    glVertexPointer(2, GL_FLOAT, 0, vertex_tex_coords);
+    glDrawArrays(GL_LINES, 0, 2);
+	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	return TRUE;
+}
 @end

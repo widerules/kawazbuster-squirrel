@@ -22,6 +22,9 @@
 		F901841C13CE440700C5E021 /* credit_button-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F901841613CE440700C5E021 /* credit_button-hd.png */; };
 		F901841D13CE440700C5E021 /* credit_button.png in Resources */ = {isa = PBXBuildFile; fileRef = F901841713CE440700C5E021 /* credit_button.png */; };
 		F901847F13CE5B2100C5E021 /* creditscene.nut in Resources */ = {isa = PBXBuildFile; fileRef = F901846813CE59C500C5E021 /* creditscene.nut */; };
+		F91C5C5514676EE2008B73D7 /* EmoFontDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F91C5C5014676EE2008B73D7 /* EmoFontDrawable.m */; };
+		F91C5C5614676EE2008B73D7 /* EmoLineDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F91C5C5214676EE2008B73D7 /* EmoLineDrawable.m */; };
+		F91C5C5714676EE2008B73D7 /* EmoSnapshotDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F91C5C5414676EE2008B73D7 /* EmoSnapshotDrawable.m */; };
 		F91CAF3913C9E6050055EC16 /* main.nut in Resources */ = {isa = PBXBuildFile; fileRef = F9DB3708136E257C00340476 /* main.nut */; };
 		F92D9DE6139070770077ED19 /* b2BroadPhase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F92D9D9B139070770077ED19 /* b2BroadPhase.cpp */; };
 		F92D9DE7139070770077ED19 /* b2CollideCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F92D9D9D139070770077ED19 /* b2CollideCircle.cpp */; };
@@ -204,6 +207,12 @@
 		F901841613CE440700C5E021 /* credit_button-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "credit_button-hd.png"; sourceTree = "<group>"; };
 		F901841713CE440700C5E021 /* credit_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = credit_button.png; sourceTree = "<group>"; };
 		F901846813CE59C500C5E021 /* creditscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = creditscene.nut; path = Resources/creditscene.nut; sourceTree = "<group>"; };
+		F91C5C4F14676EE2008B73D7 /* EmoFontDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoFontDrawable.h; sourceTree = "<group>"; };
+		F91C5C5014676EE2008B73D7 /* EmoFontDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoFontDrawable.m; sourceTree = "<group>"; };
+		F91C5C5114676EE2008B73D7 /* EmoLineDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoLineDrawable.h; sourceTree = "<group>"; };
+		F91C5C5214676EE2008B73D7 /* EmoLineDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoLineDrawable.m; sourceTree = "<group>"; };
+		F91C5C5314676EE2008B73D7 /* EmoSnapshotDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoSnapshotDrawable.h; sourceTree = "<group>"; };
+		F91C5C5414676EE2008B73D7 /* EmoSnapshotDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoSnapshotDrawable.m; sourceTree = "<group>"; };
 		F92D9D99139070770077ED19 /* Box2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Box2D.h; sourceTree = "<group>"; };
 		F92D9D9B139070770077ED19 /* b2BroadPhase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = b2BroadPhase.cpp; sourceTree = "<group>"; };
 		F92D9D9C139070770077ED19 /* b2BroadPhase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b2BroadPhase.h; sourceTree = "<group>"; };
@@ -700,6 +709,12 @@
 		F92D9E09139070820077ED19 /* emo */ = {
 			isa = PBXGroup;
 			children = (
+				F91C5C4F14676EE2008B73D7 /* EmoFontDrawable.h */,
+				F91C5C5014676EE2008B73D7 /* EmoFontDrawable.m */,
+				F91C5C5114676EE2008B73D7 /* EmoLineDrawable.h */,
+				F91C5C5214676EE2008B73D7 /* EmoLineDrawable.m */,
+				F91C5C5314676EE2008B73D7 /* EmoSnapshotDrawable.h */,
+				F91C5C5414676EE2008B73D7 /* EmoSnapshotDrawable.m */,
 				F92D9E0A139070820077ED19 /* Constants.h */,
 				F92D9E0B139070820077ED19 /* EmoAudio.h */,
 				F92D9E0C139070820077ED19 /* EmoAudio.m */,
@@ -1194,6 +1209,9 @@
 				F92D9EB0139070A10077ED19 /* sqstate.cpp in Sources */,
 				F92D9EB1139070A10077ED19 /* sqtable.cpp in Sources */,
 				F92D9EB2139070A10077ED19 /* sqvm.cpp in Sources */,
+				F91C5C5514676EE2008B73D7 /* EmoFontDrawable.m in Sources */,
+				F91C5C5614676EE2008B73D7 /* EmoLineDrawable.m in Sources */,
+				F91C5C5714676EE2008B73D7 /* EmoSnapshotDrawable.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
