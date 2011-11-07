@@ -25,9 +25,9 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-#include <squirrel.h>
-#include <EmoImage.h>
-#include <EmoStage.h>
+#import "squirrel.h"
+#import "EmoImage.h"
+#import "EmoStage.h"
 
 @interface EmoAnimationFrame : NSObject {
 	NSString*   name;
@@ -176,25 +176,6 @@
 -(void)deleteImagePacks;
 @end
 
-@interface EmoLineDrawable : EmoDrawable {
-	float x2, y2;
-}
-@property (readwrite) float x2;
-@property (readwrite) float y2;
-
--(void)initDrawable;
--(BOOL)bindVertex;
--(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage;
-@end
-
-@interface EmoSnapshotDrawable : EmoDrawable {
-
-}
--(void)initDrawable;
--(BOOL)bindVertex;
--(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage;
-@end
-
 @interface EmoImagePackParser : NSObject <NSXMLParserDelegate> {
     EmoDrawable* drawable;
     NSInteger frameIndex;
@@ -204,29 +185,17 @@
 @property (readwrite) NSInteger frameIndex;
 @end
 
-@interface EmoFontDrawable : EmoDrawable {
-    NSInteger fontSize;
-    NSString* fontFace;
-    BOOL isBold;
-    BOOL isItalic;
+@interface EmoLiquidDrawable : EmoDrawable {
+    GLsizei segmentCount;
     
-    NSString* param1;
-    NSString* param2;
-    NSString* param3;
-    NSString* param4;
-    NSString* param5;
-    NSString* param6;
+    float* textureCoords;
+    float* segmentCoords;
 }
-@property (readwrite) NSInteger fontSize;
-@property (copy, readwrite) NSString* fontFace;
-@property (readwrite) BOOL isBold, isItalic;
-@property (copy, readwrite) NSString* param1;
-@property (copy, readwrite) NSString* param2;
-@property (copy, readwrite) NSString* param3;
-@property (copy, readwrite) NSString* param4;
-@property (copy, readwrite) NSString* param5;
-@property (copy, readwrite) NSString* param6;
+@property (readwrite) GLsizei segmentCount;
 
--(void)loadTextBitmap;
+-(void)initDrawable;
+-(BOOL)bindVertex;
+-(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage;
+-(BOOL)updateTextureCoords:(NSInteger)index tx:(float)tx ty:(float)ty;
+-(BOOL)updateSegmentCoords:(NSInteger)index sx:(float)sx sy:(float)sy;
 @end
-

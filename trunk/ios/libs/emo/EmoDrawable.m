@@ -25,15 +25,15 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-#import <OpenGLES/ES2/glext.h>
+#import "OpenGLES/ES2/glext.h"
 
-#include <EmoDrawable.h>
-#include <squirrel.h>
-#include <Constants.h>
-#include <VmFunc.h>
-#include <EmoEngine.h>
-#include <EmoEngine_glue.h>
-#include <Util.h>
+#import "EmoDrawable.h"
+#import "squirrel.h"
+#import "Constants.h"
+#import "VmFunc.h"
+#import "EmoEngine.h"
+#import "EmoEngine_glue.h"
+#import "Util.h"
 
 extern EmoEngine* engine;
 
@@ -187,6 +187,7 @@ extern EmoEngine* engine;
 -(NSInteger)tex_coord_frame_startY;
 -(float)getTexelHalfX;
 -(float)getTexelHalfY;
+-(BOOL)flipY;
 @end
 
 @implementation EmoDrawable
@@ -404,12 +405,14 @@ extern EmoEngine* engine;
 }
 
 -(NSInteger) tex_coord_frame_startY {
-    if (isPackedAtlas) {
+    if (isPackedAtlas && [self flipY]) {
+        return [self getImagePack:[imagepacks_names objectAtIndex:frame_index]].y;
+    } else if (isPackedAtlas) {
         return texture.height - frameHeight - [self getImagePack:[imagepacks_names objectAtIndex:frame_index]].y;
     }
 	int xcount = (int)round((texture.width - (margin * 2) + border) / (float)(frameWidth  + border));
 	int ycount = (int)round((texture.height - (margin * 2) + border) / (float)(frameHeight + border));
-	int yindex = ycount - (frame_index / xcount) - 1;
+	int yindex = [self flipY] ? (frame_index / xcount) : ycount - (frame_index / xcount) - 1;
 	return ((border + frameHeight) * yindex) + margin;
 }
 
@@ -465,20 +468,27 @@ extern EmoEngine* engine;
     }
 }
 
+/*
+ * returns whether Y axis of texture is flipped or not
+ */
+-(BOOL)flipY {
+    return hasTexture && (texture.isPVRTC_2 || texture.isPVRTC_4);
+}
+
 -(BOOL)bindVertex {
     clearGLErrors("EmoDrawable:bindVertex");
-	
+    
     vertex_tex_coords[0] = [self getTexCoordStartX];
-    vertex_tex_coords[1] = [self getTexCoordStartY];
+    vertex_tex_coords[1] = [self flipY] ? [self getTexCoordEndY] : [self getTexCoordStartY];
 	
     vertex_tex_coords[2] = [self getTexCoordStartX];
-    vertex_tex_coords[3] = [self getTexCoordEndY];
+    vertex_tex_coords[3] = [self flipY] ? [self getTexCoordStartY] : [self getTexCoordEndY];
 	
     vertex_tex_coords[4] = [self getTexCoordEndX];
-    vertex_tex_coords[5] = [self getTexCoordEndY];
+    vertex_tex_coords[5] = [self flipY] ? [self getTexCoordStartY] : [self getTexCoordEndY];
 	
     vertex_tex_coords[6] = [self getTexCoordEndX];
-    vertex_tex_coords[7] = [self getTexCoordStartY];
+    vertex_tex_coords[7] = [self flipY] ? [self getTexCoordEndY] : [self getTexCoordStartY];
 	
 	if (frames_vbos[frame_index] == 0) {
 		glGenBuffers (1, &frames_vbos[frame_index]);
@@ -721,242 +731,93 @@ extern EmoEngine* engine;
 }
 @end
 
-@implementation EmoLineDrawable
-@synthesize x2, y2;
-
+@implementation EmoLiquidDrawable
+@synthesize segmentCount;
 -(void)initDrawable {
 	[super initDrawable];
-	
-	x2 = 0;
-	y2 = 0;
-	
-    param_color[0] = 0;
-    param_color[1] = 1;
-    param_color[2] = 0;
+    
+    textureCoords = NULL;
+    segmentCoords = NULL;
+    
+    segmentCount = 18;
 }
 
 -(BOOL)bindVertex {
+    if (segmentCount <= 0) return FALSE;
+
+    if (textureCoords != NULL) free(textureCoords);
+    if (segmentCoords != NULL) free(segmentCoords);
+    
+    textureCoords = (float*)malloc(sizeof(float) * segmentCount * 2);
+    segmentCoords = (float*)malloc(sizeof(float) * segmentCount * 2);
+    
+    for (int i = 0; i < segmentCount * 2; i++) {
+        textureCoords[i] = 0.0f;
+        segmentCoords[i] = 0.0f;
+    }
+
+    [super bindVertex];
+    
 	loaded = TRUE;
 	return TRUE;
+}
+
+-(BOOL)updateTextureCoords:(NSInteger)index tx:(float)tx ty:(float)ty {
+	if (!loaded) return FALSE;
+    if (index >= segmentCount) return FALSE;
+
+    int realIndex = index * 2;
+    textureCoords[realIndex]     = tx;
+    textureCoords[realIndex + 1] = ty;
+    
+    return TRUE;
+}
+
+-(BOOL)updateSegmentCoords:(NSInteger)index sx:(float)sx sy:(float)sy {
+	if (!loaded) return FALSE;
+    if (index >= segmentCount) return FALSE;
+    
+    int realIndex = index * 2;
+    segmentCoords[realIndex]     = sx;
+    segmentCoords[realIndex + 1] = sy;
+    
+    return TRUE;
 }
 
 -(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage {
 	if (!loaded) return FALSE;
-	
-	vertex_tex_coords[0] = x;
-	vertex_tex_coords[1] = y;
-	vertex_tex_coords[2] = x2;
-	vertex_tex_coords[3] = y2;
-	
+    if (segmentCount <= 0) return FALSE;
+
     glMatrixMode (GL_MODELVIEW);
-    glLoadIdentity (); 
-	
-	glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glLineWidth(width);
+    glLoadIdentity ();
 	
     // update colors
     glColor4f(param_color[0], param_color[1], param_color[2], param_color[3]);
-	
-    glVertexPointer(2, GL_FLOAT, 0, vertex_tex_coords);
-    glDrawArrays(GL_LINES, 0, 2);
-	
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
+    
+	if ([self hasTexture]) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture.textureId);
+    
+        glTexCoordPointer(2, GL_FLOAT, 0, textureCoords);
+    } else {
+        glDisable(GL_TEXTURE_2D);
+    }
+    
+    glVertexPointer(2, GL_FLOAT, 0, segmentCoords);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, segmentCount);
+    
 	return TRUE;
 }
-@end
-
-@implementation EmoSnapshotDrawable
-/*
- * initialize drawable
- */
--(void)initDrawable {
-	[super initDrawable];
+-(void)doUnload:(BOOL)doAll {
+	if (!loaded) return;
     
-    // snapshot drawable should be the first drawable
-    z = -1;
+    if (textureCoords != NULL) free(textureCoords);
+    if (segmentCoords != NULL) free(segmentCoords);
     
-    isScreenEntity = FALSE;
-}
-/*
- * create texture and bind OpenGL vertex
- * width and height should be set before calling bindVertex.
- */
--(BOOL)bindVertex {
+    textureCoords = NULL;
+    segmentCoords = NULL;
     
-    clearGLErrors("EmoSnapshotDrawable:bindVertex");
-    
-    if (!hasTexture) {
-        EmoImage* imageInfo = [[EmoImage alloc]init];
-        
-        imageInfo.width  = width;
-        imageInfo.height = height;
-        
-        imageInfo.glWidth  = imageInfo.width;
-        imageInfo.glHeight = imageInfo.height;
-        imageInfo.loaded = FALSE;
-			
-        imageInfo.referenceCount++;
-            
-        // assign OpenGL texture id
-        [imageInfo genTextures];
-        
-        texture = imageInfo;
-        hasTexture = TRUE;
-    }
-    
-	glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture.textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    texture.loaded = TRUE;
-    
-    vertex_tex_coords[0] = [self getTexCoordStartX];
-    vertex_tex_coords[1] = [self getTexCoordStartY];
-	
-    vertex_tex_coords[2] = [self getTexCoordStartX];
-    vertex_tex_coords[3] = [self getTexCoordEndY];
-	
-    vertex_tex_coords[4] = [self getTexCoordEndX];
-    vertex_tex_coords[5] = [self getTexCoordEndY];
-	
-    vertex_tex_coords[6] = [self getTexCoordEndX];
-    vertex_tex_coords[7] = [self getTexCoordStartY];
-	
-	if (frames_vbos[frame_index] == 0) {
-		glGenBuffers (1, &frames_vbos[frame_index]);
-	}
-	
-    glBindBuffer(GL_ARRAY_BUFFER, frames_vbos[frame_index]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8, vertex_tex_coords, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	printGLErrors("Could not create OpenGL vertex");
-	
-	loaded = TRUE;
-	
-	return TRUE;
+    [super doUnload:doAll];
 }
 
--(BOOL)onDrawFrame:(NSTimeInterval)dt withStage:(EmoStage*)stage {
-    // if the snapshot ends, use default onDrawFrame
-    if (!engine.useOffscreen) {
-        orthFactorX = width  / (float)stage.width;
-        orthFactorY = height / (float)stage.height;
-        return [super onDrawFrame:dt withStage:stage];
-    }
-    // vewport should be reset everytime on drawing
-    glViewport(0, 0, width, height); 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrthof(0, width, height, 0, -1, 1);
-    
-    orthFactorX = 1.0;
-    orthFactorY = 1.0;
-    
-    glClearColor([engine.stage getColor:0], [engine.stage getColor:1],
-                 [engine.stage getColor:2], [engine.stage getColor:3]);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    [super onDrawFrame:dt withStage:stage];
-    engine.stage.dirty = TRUE;
-    
-    return TRUE;
-}
-@end
-
-@implementation EmoFontDrawable
-@synthesize fontSize, fontFace, isBold, isItalic;
-@synthesize param1, param2, param3, param4, param5, param6;
-
--(void)initDrawable {
-	[super initDrawable];
-    
-    fontSize = 0;
-    isBold   = FALSE;
-    isItalic = FALSE;
-}
-
--(void)dealloc {
-    [fontFace release];
-    [param1 release];
-    [param2 release];
-    [param3 release];
-    [param4 release];
-    [param5 release];
-    [param6 release];
-    
-    [super dealloc];
-}
-
--(void)loadTextBitmap {
-    [texture freeData];
-    
-    UIFont* font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    
-    if ([fontFace length] > 0) {
-        NSInteger size = fontSize > 0 ? fontSize : [UIFont systemFontSize];
-        font = [UIFont fontWithName:fontFace size:size];
-    } else if (fontSize > 0) {
-        font = [UIFont systemFontOfSize:fontSize];
-    }
-    
-    NSString* text = @" ";
-    
-    // extract property name
-    NSString* propName = 
-            [name substringFromIndex:[name rangeOfString:@"::"].location+2];
-
-    // retrieve property value
-    NSDictionary* plist = [NSDictionary dictionaryWithContentsOfFile:[
-            [NSBundle mainBundle] pathForResource:@"strings" ofType:@"plist"]];  
-    if ([plist objectForKey:propName] != nil) {
-        NSString* formatStr = [[plist objectForKey:propName] 
-                               stringByReplacingOccurrencesOfString:@"%s" withString:@"%@"];
-        
-        text = [NSString stringWithFormat:formatStr,
-                param1, param2, param3, param4, param5, param6];
-    }
-    
-    CGSize textSize = [text sizeWithFont:font]; 
-    
-    int textWidth  = textSize.width;
-    int textHeight = textSize.height;
-    
-    GLubyte *bitmap = (GLubyte *)malloc(textWidth * textHeight * 4);
-    memset(bitmap, 0, textWidth * textHeight * 4);
-
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(
-                    bitmap, textWidth, textHeight,
-                    8, textWidth * 4, colorSpace,
-                    kCGImageAlphaPremultipliedLast);
-    
-    UIGraphicsPushContext(context);
-
-    [[UIColor whiteColor] set];
-    [text drawAtPoint:CGPointMake(0, 0) withFont:font];
-    
-    UIGraphicsPopContext();
-    
-    CGColorSpaceRelease(colorSpace);
-    CGContextRelease(context);
-    
-    texture.width  = textWidth;
-    texture.height = textHeight;
-    texture.glWidth  = nextPowerOfTwo(texture.width);
-    texture.glHeight = nextPowerOfTwo(texture.height);
-    texture.data   = bitmap;
-    texture.hasAlpha = TRUE;
-    texture.freed = FALSE;
-    
-}
 @end
