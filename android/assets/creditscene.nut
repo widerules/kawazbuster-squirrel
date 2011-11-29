@@ -53,12 +53,12 @@ class CreditScene {
         }
         
         okButton = emo.SpriteSheet(getHdImageName("credit_button.png"), btWidth, btHeight);
-        okButton.setFrame(1);
         okButton.move(
             foreground.getX() + foreground.getWidth()  - okButton.getWidth(),
             foreground.getY() + foreground.getHeight() - okButton.getHeight());
         okButton.setZ(3);
         okButton.load();
+        okButton.setFrame(1);
     }
     
     /*
