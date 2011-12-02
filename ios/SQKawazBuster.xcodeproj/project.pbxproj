@@ -22,6 +22,8 @@
 		F901841C13CE440700C5E021 /* credit_button-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F901841613CE440700C5E021 /* credit_button-hd.png */; };
 		F901841D13CE440700C5E021 /* credit_button.png in Resources */ = {isa = PBXBuildFile; fileRef = F901841713CE440700C5E021 /* credit_button.png */; };
 		F901847F13CE5B2100C5E021 /* creditscene.nut in Resources */ = {isa = PBXBuildFile; fileRef = F901846813CE59C500C5E021 /* creditscene.nut */; };
+		F914CA3F1488EE3C006BAB73 /* EmoLiquidDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F914CA3C1488EE3C006BAB73 /* EmoLiquidDrawable.m */; };
+		F914CA401488EE3C006BAB73 /* EmoPointDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F914CA3E1488EE3C006BAB73 /* EmoPointDrawable.m */; };
 		F91C5C5514676EE2008B73D7 /* EmoFontDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F91C5C5014676EE2008B73D7 /* EmoFontDrawable.m */; };
 		F91C5C5614676EE2008B73D7 /* EmoLineDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F91C5C5214676EE2008B73D7 /* EmoLineDrawable.m */; };
 		F91C5C5714676EE2008B73D7 /* EmoSnapshotDrawable.m in Sources */ = {isa = PBXBuildFile; fileRef = F91C5C5414676EE2008B73D7 /* EmoSnapshotDrawable.m */; };
@@ -207,6 +209,10 @@
 		F901841613CE440700C5E021 /* credit_button-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "credit_button-hd.png"; sourceTree = "<group>"; };
 		F901841713CE440700C5E021 /* credit_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = credit_button.png; sourceTree = "<group>"; };
 		F901846813CE59C500C5E021 /* creditscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = creditscene.nut; path = Resources/creditscene.nut; sourceTree = "<group>"; };
+		F914CA3B1488EE3C006BAB73 /* EmoLiquidDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoLiquidDrawable.h; sourceTree = "<group>"; };
+		F914CA3C1488EE3C006BAB73 /* EmoLiquidDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoLiquidDrawable.m; sourceTree = "<group>"; };
+		F914CA3D1488EE3C006BAB73 /* EmoPointDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoPointDrawable.h; sourceTree = "<group>"; };
+		F914CA3E1488EE3C006BAB73 /* EmoPointDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoPointDrawable.m; sourceTree = "<group>"; };
 		F91C5C4F14676EE2008B73D7 /* EmoFontDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoFontDrawable.h; sourceTree = "<group>"; };
 		F91C5C5014676EE2008B73D7 /* EmoFontDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoFontDrawable.m; sourceTree = "<group>"; };
 		F91C5C5114676EE2008B73D7 /* EmoLineDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoLineDrawable.h; sourceTree = "<group>"; };
@@ -709,6 +715,10 @@
 		F92D9E09139070820077ED19 /* emo */ = {
 			isa = PBXGroup;
 			children = (
+				F914CA3B1488EE3C006BAB73 /* EmoLiquidDrawable.h */,
+				F914CA3C1488EE3C006BAB73 /* EmoLiquidDrawable.m */,
+				F914CA3D1488EE3C006BAB73 /* EmoPointDrawable.h */,
+				F914CA3E1488EE3C006BAB73 /* EmoPointDrawable.m */,
 				F91C5C4F14676EE2008B73D7 /* EmoFontDrawable.h */,
 				F91C5C5014676EE2008B73D7 /* EmoFontDrawable.m */,
 				F91C5C5114676EE2008B73D7 /* EmoLineDrawable.h */,
@@ -1212,6 +1222,8 @@
 				F91C5C5514676EE2008B73D7 /* EmoFontDrawable.m in Sources */,
 				F91C5C5614676EE2008B73D7 /* EmoLineDrawable.m in Sources */,
 				F91C5C5714676EE2008B73D7 /* EmoSnapshotDrawable.m in Sources */,
+				F914CA3F1488EE3C006BAB73 /* EmoLiquidDrawable.m in Sources */,
+				F914CA401488EE3C006BAB73 /* EmoPointDrawable.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
