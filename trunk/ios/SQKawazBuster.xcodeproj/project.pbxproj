@@ -208,7 +208,7 @@
 		F901841513CE440700C5E021 /* credit_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = credit_background.png; sourceTree = "<group>"; };
 		F901841613CE440700C5E021 /* credit_button-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "credit_button-hd.png"; sourceTree = "<group>"; };
 		F901841713CE440700C5E021 /* credit_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = credit_button.png; sourceTree = "<group>"; };
-		F901846813CE59C500C5E021 /* creditscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = creditscene.nut; path = Resources/creditscene.nut; sourceTree = "<group>"; };
+		F901846813CE59C500C5E021 /* creditscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = creditscene.nut; path = Resources/creditscene.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		F914CA3B1488EE3C006BAB73 /* EmoLiquidDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoLiquidDrawable.h; sourceTree = "<group>"; };
 		F914CA3C1488EE3C006BAB73 /* EmoLiquidDrawable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmoLiquidDrawable.m; sourceTree = "<group>"; };
 		F914CA3D1488EE3C006BAB73 /* EmoPointDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmoPointDrawable.h; sourceTree = "<group>"; };
@@ -397,12 +397,12 @@
 		F92D9E9B139070A10077ED19 /* squtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = squtils.h; sourceTree = "<group>"; };
 		F92D9E9C139070A10077ED19 /* sqvm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqvm.cpp; sourceTree = "<group>"; };
 		F92D9E9D139070A10077ED19 /* sqvm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqvm.h; sourceTree = "<group>"; };
-		F98039AE13C9EDE600C9CDAA /* howtoscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = howtoscene.nut; path = Resources/howtoscene.nut; sourceTree = "<group>"; };
-		F98039AF13C9EDE600C9CDAA /* logoscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = logoscene.nut; path = Resources/logoscene.nut; sourceTree = "<group>"; };
-		F98039B213C9EDEF00C9CDAA /* common.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = common.nut; path = Resources/common.nut; sourceTree = "<group>"; };
-		F98039B413C9EDF800C9CDAA /* titlescene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = titlescene.nut; path = Resources/titlescene.nut; sourceTree = "<group>"; };
+		F98039AE13C9EDE600C9CDAA /* howtoscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = howtoscene.nut; path = Resources/howtoscene.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		F98039AF13C9EDE600C9CDAA /* logoscene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = logoscene.nut; path = Resources/logoscene.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		F98039B213C9EDEF00C9CDAA /* common.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = common.nut; path = Resources/common.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		F98039B413C9EDF800C9CDAA /* titlescene.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = titlescene.nut; path = Resources/titlescene.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		F99F85E01395B9AB00D66DED /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Resources/graphics/Icon.png; sourceTree = "<group>"; };
-		F9B500AF13807682009BB773 /* physics.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = physics.nut; path = Resources/physics.nut; sourceTree = "<group>"; };
+		F9B500AF13807682009BB773 /* physics.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = physics.nut; path = Resources/physics.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		F9C31C181345FC8600B066DC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F9C7DE93134ABBDE0053065E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		F9D61F4913C7E78B0080EB42 /* font.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = font.png; path = Resources/graphics/font.png; sourceTree = "<group>"; };
@@ -459,8 +459,8 @@
 		F9D6204013C7FDB30080EB42 /* time_up.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = time_up.wav; path = Resources/sounds/time_up.wav; sourceTree = "<group>"; };
 		F9D6204113C7FDB30080EB42 /* title.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = title.wav; path = Resources/sounds/title.wav; sourceTree = "<group>"; };
 		F9D9239D1373D14A001AA3E0 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		F9DB3708136E257C00340476 /* main.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.nut; path = Resources/main.nut; sourceTree = "<group>"; };
-		F9DB3709136E257C00340476 /* runtime.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runtime.nut; path = Resources/runtime.nut; sourceTree = "<group>"; };
+		F9DB3708136E257C00340476 /* main.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.nut; path = Resources/main.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		F9DB3709136E257C00340476 /* runtime.nut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runtime.nut; path = Resources/runtime.nut; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		F9E41A42134494DE0009385D /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		F9EEF0B3144E8E6200EFA8C9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F9EEF0B5144E8FC900EFA8C9 /* kawaztan-hd.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "kawaztan-hd.xml"; sourceTree = "<group>"; };
