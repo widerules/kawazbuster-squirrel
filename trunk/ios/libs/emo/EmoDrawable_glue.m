@@ -122,6 +122,8 @@ void initDrawableFunctions() {
     registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "updatePointDrawablePointCount",   emoPointDrawableUpdatePointCount);
     registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "getPointDrawablePointCount",      emoPointDrawableGetPointCount);
     registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "isOffscreenSupported",            emoStageIsOffscreenSupported);
+
+    registerClassFunc(engine.sqvm, EMO_STAGE_CLASS,    "blendFunc",      emoDrawableBlendFunc);
 }
 
 /*
@@ -2115,7 +2117,16 @@ SQInteger emoDrawableAnimate(HSQUIRRELVM v) {
                 SQInteger value;
                 sq_getinteger(v, -1, &value);
                 [animation setFrame:idx withValue:value];
+            } else if(sq_gettype(v, -1) == OT_STRING) {
+                const SQChar *value;
+                sq_getstring(v, -1, &value);
+                EmoImagePackInfo* info = [drawable getImagePack:
+                                        [NSString stringWithCString:value
+                                            encoding:NSASCIIStringEncoding]];
+                if (info == nil) continue;
+                [animation setFrame:idx withValue:info.index];
             }
+            
             idx++;
             sq_pop(v, 2);
         }
@@ -2666,5 +2677,43 @@ SQInteger emoPointDrawableUpdatePointCoords(HSQUIRRELVM v) {
  */
 SQInteger emoStageIsOffscreenSupported(HSQUIRRELVM v) {
     sq_pushbool(v, true);
+    return 1;
+}
+
+/*
+ * Set blend function of the sprite
+ */
+SQInteger emoDrawableBlendFunc(HSQUIRRELVM v) {
+    const SQChar* id;
+    SQInteger nargs = sq_gettop(v);
+    if (nargs >= 2 && sq_gettype(v, 2) == OT_STRING) {
+        sq_tostring(v, 2);
+        sq_getstring(v, -1, &id);
+        sq_poptop(v);
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }
+	
+    EmoDrawable* drawable = [engine getDrawable:id];
+	
+    if (drawable == nil) {
+        sq_pushinteger(v, ERR_INVALID_ID);
+        return 1;
+    }
+    
+    if (nargs >= 4 && sq_gettype(v, 3) != OT_NULL && sq_gettype(v, 4) != OT_NULL) {
+        SQInteger src, dst;
+        sq_getinteger(v, 3, &src);
+        sq_getinteger(v, 4, &dst);
+        
+        drawable.srcBlendFactor = src;
+        drawable.dstBlendFactor = dst;
+    } else {
+        sq_pushinteger(v, ERR_INVALID_PARAM);
+        return 1;
+    }
+    
+    sq_pushinteger(v, EMO_NO_ERROR);
     return 1;
 }
